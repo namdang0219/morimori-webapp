@@ -18,7 +18,7 @@ const AlbumImageListPage = () => {
 								{
 									label: "Share Album",
 									onClick: () => null,
-									icon: <IoMdShare size={20} />,
+									icon: <IoMdShare size={18} />,
 								},
 							]}
 						/>

@@ -13,7 +13,7 @@ export default {
       },
       spacing: {
         'main-padding': '16px',
-        'header-height': '56px',
+        'header-height': '46px',
       },
     },
   },

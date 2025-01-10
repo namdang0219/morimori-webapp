@@ -6,7 +6,7 @@ const Header = ({
 	largeTitle,
 	backTitle,
 	rightContainer,
-	containerClassName = "",
+	containerClassName = "bg-white bg-opacity-75 backdrop-blur-2xl",
 }: {
 	largeTitle?: string;
 	backTitle?: string;
@@ -17,16 +17,18 @@ const Header = ({
 
 	return (
 		<div
-			className={`absolute flex z-[1000] items-center justify-between w-full bg-white bg-opacity-75 h-header-height backdrop-blur-2xl px-main-padding ${containerClassName}`}
+			className={`absolute flex z-[1000] items-center justify-between w-full  h-header-height px-main-padding ${containerClassName}`}
 		>
-			{largeTitle && <h1 className="text-3xl">{largeTitle}</h1>}
+			{largeTitle && (
+				<h1 className="text-2xl font-semibold">{largeTitle}</h1>
+			)}
 			{backTitle && (
 				<div
-					className="flex items-center gap-1"
+					className="flex items-center gap-0.5"
 					onClick={() => navigate(-1)}
 				>
-					<IoChevronBack size={24} />
-					<span className="text-xl">{backTitle}</span>
+					<IoChevronBack size={20} />
+					<span className="text-lg">{backTitle}</span>
 				</div>
 			)}
 

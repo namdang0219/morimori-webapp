@@ -3,7 +3,7 @@ import MainLayout from '../../../components/layout/MainLayout';
 
 const CameraPage = () => {
     return (
-        <MainLayout>
+        <MainLayout navHidden>
             Camerapage
         </MainLayout>
     );

@@ -13,16 +13,17 @@ interface INavigation {
 }
 
 const Navigation = () => {
-	const location = useLocation();
+	const location = useLocation(); 
+
 	const currentPage = location.pathname;
 
 	return (
-		<div className="absolute flex items-center gap-1 p-2 -translate-x-1/2 bg-white rounded-full shadow-[0px_2px_20px_rgba(0,0,0,0.10)] bottom-5 left-1/2">
+		<div className="absolute z-[1000] flex items-center gap-1 p-2 -translate-x-1/2 bg-white rounded-full shadow-[0px_2px_20px_rgba(0,0,0,0.10)] bottom-3 left-1/2">
 			{navigations.map((n: INavigation) => (
 				<Fragment key={n.name}>
 					<NavLink
 						to={n.href}
-						className={`w-[54px] aspect-square rounded-full flex items-center justify-center  ${
+						className={`w-[45px] aspect-square rounded-full flex items-center justify-center  ${
 							currentPage === n.href
 								? "text-violet-500"
 								: "text-black"
@@ -37,19 +38,19 @@ const Navigation = () => {
 };
 
 const navigations: INavigation[] = [
-	{ name: "album", href: "/", icon: <IoAlbumsOutline size={36} /> },
-	{ name: "map", href: "/map", icon: <FaRegMap size={36} /> },
+	{ name: "album", href: "/", icon: <IoAlbumsOutline size={26} /> },
+	{ name: "map", href: "/map", icon: <FaRegMap size={26} /> },
 	{
 		name: "camera",
 		href: "/camera",
-		icon: <HiOutlineCamera size={36} color="white" />,
+		icon: <HiOutlineCamera size={28} color="white" />,
 	},
 	{
 		name: "notification",
 		href: "/notification",
-		icon: <LuBell size={36} />,
+		icon: <LuBell size={26} />,
 	},
-	{ name: "profile", href: "/profile", icon: <FaUser size={32} /> },
+	{ name: "profile", href: "/profile", icon: <FaUser size={22} /> },
 ];
 
 export default Navigation;

@@ -15,42 +15,20 @@ const AlbumCarousel = () => {
 	return (
 		<div className="w-screen overflow-hidden slider-container shrink-0">
 			<Slider {...settings}>
-				<div className="flex items-center justify-center h-[250px] w-screen">
-					<img
-						src="https://i.pinimg.com/736x/24/b3/03/24b303141d27412330944b21dbcdf625.jpg"
-						alt=""
-					/>
-				</div>
-				<div className="flex items-center justify-center h-[250px] w-screen">
-					<img
-						src="https://i.pinimg.com/736x/24/b3/03/24b303141d27412330944b21dbcdf625.jpg"
-						alt=""
-					/>
-				</div>
-				<div className="flex items-center justify-center h-[250px] w-screen">
-					<img
-						src="https://i.pinimg.com/736x/24/b3/03/24b303141d27412330944b21dbcdf625.jpg"
-						alt=""
-					/>
-				</div>
-				<div className="flex items-center justify-center h-[250px] w-screen">
-					<img
-						src="https://i.pinimg.com/736x/24/b3/03/24b303141d27412330944b21dbcdf625.jpg"
-						alt=""
-					/>
-				</div>
-				<div className="flex items-center justify-center h-[250px] w-screen">
-					<img
-						src="https://i.pinimg.com/736x/24/b3/03/24b303141d27412330944b21dbcdf625.jpg"
-						alt=""
-					/>
-				</div>
-				<div className="flex items-center justify-center h-[250px] w-screen">
-					<img
-						src="https://i.pinimg.com/736x/24/b3/03/24b303141d27412330944b21dbcdf625.jpg"
-						alt=""
-					/>
-				</div>
+				{Array(5)
+					.fill(0)
+					.map((item, index) => (
+						<div
+							key={index}
+							className="flex items-center justify-center h-[240px] w-screen"
+						>
+							<img
+								src="https://i.pinimg.com/736x/d3/e6/ca/d3e6ca47a36569d3bc4400404336c3d5.jpg"
+								alt=""
+								className="object-cover object-center w-full h-full"
+							/>
+						</div>
+					))}
 			</Slider>
 		</div>
 	);
