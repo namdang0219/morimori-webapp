@@ -10,6 +10,8 @@ import LoginPage from "./page/auth/LoginPage";
 import SignupPage from "./page/auth/SignupPage";
 import React from "react";
 import AlbumImageListPage from "./page/app/album/AlbumImageListPage";
+import ProfileEditPage from "./page/app/profile/ProfileEditPage";
+import SettingPage from "./page/app/profile/SettingPage";
 
 const App = () => {
 	return (
@@ -34,6 +36,8 @@ const App = () => {
 				<Route path="/notification" element={<NotificationPage />} />
 				{/* profile  */}
 				<Route path="/profile" element={<ProfilePage />} />
+				<Route path="/profile-edit" element={<ProfileEditPage />} />
+				<Route path="/setting" element={<SettingPage />} />
 			</>
 
 			{/* Auth  */}

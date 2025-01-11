@@ -1,5 +1,6 @@
 import React from "react";
 import Slider from "react-slick";
+import { albumMocks } from "../../mock/albumMocks";
 
 const AlbumCarousel = () => {
 	const settings = {
@@ -15,20 +16,26 @@ const AlbumCarousel = () => {
 	return (
 		<div className="w-screen overflow-hidden slider-container shrink-0">
 			<Slider {...settings}>
-				{Array(5)
-					.fill(0)
-					.map((item, index) => (
-						<div
-							key={index}
-							className="flex items-center justify-center h-[240px] w-screen"
-						>
-							<img
-								src="https://i.pinimg.com/736x/d3/e6/ca/d3e6ca47a36569d3bc4400404336c3d5.jpg"
-								alt=""
-								className="object-cover object-center w-full h-full"
-							/>
+				{albumMocks.slice(0, 3).map((item, index) => (
+					<div
+						key={index}
+						className="flex items-center justify-center relative h-[240px] w-screen"
+					>
+						<div className="absolute inset-0 flex items-center justify-center text-center text-white bg-black bg-opacity-10">
+							<div>
+								<p className="text-2xl font-medium">{item.title}</p>
+								<p className="font-medium">
+									{item.images.length}枚
+								</p>
+							</div>
 						</div>
-					))}
+						<img
+							src={item.cover}
+							alt="slider-album-cover"
+							className="object-cover object-center w-full h-full"
+						/>
+					</div>
+				))}
 			</Slider>
 		</div>
 	);

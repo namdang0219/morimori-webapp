@@ -43,13 +43,15 @@ const AlbumHorizontalList = ({
 								backgroundImage: `url(${item.cover})`,
 							}}
 						>
-							<div className="absolute flex items-center justify-center bg-white rounded-full bottom-2 right-2 w-7 aspect-square">
-								<IoHeart
-									color="red"
-									size={20}
-									className="mt-0.5"
-								/>
-							</div>
+							{item.favorite && (
+								<div className="absolute flex items-center justify-center bg-white rounded-full bottom-2 right-2 w-7 aspect-square">
+									<IoHeart
+										color="red"
+										size={20}
+										className="mt-0.5"
+									/>
+								</div>
+							)}
 						</div>
 					))}
 			</div>

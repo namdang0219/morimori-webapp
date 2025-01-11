@@ -7,11 +7,13 @@ const Header = ({
 	backTitle,
 	rightContainer,
 	containerClassName = "bg-white bg-opacity-75 backdrop-blur-2xl",
+	backTitleClassName = "text-ios-blue",
 }: {
 	largeTitle?: string;
 	backTitle?: string;
 	rightContainer?: React.ReactNode;
 	containerClassName?: string;
+	backTitleClassName?: string;
 }) => {
 	const navigate = useNavigate();
 
@@ -24,7 +26,7 @@ const Header = ({
 			)}
 			{backTitle && (
 				<div
-					className="flex items-center gap-0.5"
+					className={`flex items-center gap-0.5 ${backTitleClassName}`}
 					onClick={() => navigate(-1)}
 				>
 					<IoChevronBack size={20} />

@@ -8,6 +8,7 @@ import { RiEditBoxLine } from "react-icons/ri";
 import { CiShare2 } from "react-icons/ci";
 import { Tabs, TabsProps } from "antd";
 import { imageMocks } from "../../../mock/imageMocks";
+import { useNavigate } from "react-router";
 
 const onChange = (key: string) => {
 	console.log(key);
@@ -37,7 +38,7 @@ const ProfileTagsTab = () => {
 	return (
 		<div className="grid grid-cols-3 gap-1">
 			{imageMocks.length > 0 &&
-				imageMocks.slice(0,5).map((item) => (
+				imageMocks.slice(0, 5).map((item) => (
 					<div
 						key={item.iid}
 						className="w-full overflow-hidden aspect-square"
@@ -67,6 +68,8 @@ const items: TabsProps["items"] = [
 ];
 
 const ProfilePage = () => {
+	const navigate = useNavigate();
+
 	return (
 		<MainLayout>
 			<Header
@@ -76,7 +79,7 @@ const ProfilePage = () => {
 						<span>
 							<IoQrCodeOutline size={22} />
 						</span>
-						<span>
+						<span onClick={() => navigate("/setting")}>
 							<IoSettingsOutline size={24} />
 						</span>
 					</>
@@ -125,7 +128,10 @@ const ProfilePage = () => {
 
 				{/* func button  */}
 				<div className="flex items-center justify-center gap-2 mt-2 text-gray-400">
-					<button className="flex items-center gap-1 px-2 border border-gray-400 rounded">
+					<button
+						className="flex items-center gap-1 px-2 border border-gray-400 rounded"
+						onClick={() => navigate("/profile-edit")}
+					>
 						<span>
 							<RiEditBoxLine />
 						</span>
