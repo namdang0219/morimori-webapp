@@ -12,32 +12,38 @@ import React from "react";
 import AlbumImageListPage from "./page/app/album/AlbumImageListPage";
 import ProfileEditPage from "./page/app/profile/ProfileEditPage";
 import SettingPage from "./page/app/profile/SettingPage";
+import ProtectedRoutes from "./ProtectedRoutes";
 
 const App = () => {
 	return (
 		<Routes>
 			{/* App  */}
 			<>
-				{/* lbum  */}
-				<Route path="/" element={<AlbumPage />} />
-				<Route
-					path="/album/detail/:aid"
-					element={<AlbumDetailPage />}
-				/>
-				<Route
-					path="/album/photos/:aid/"
-					element={<AlbumImageListPage />}
-				/>
-				{/* map  */}
-				<Route path="/map" element={<MapPage />} />
-				{/* camera  */}
-				<Route path="/camera" element={<CameraPage />} />
-				{/* notification  */}
-				<Route path="/notification" element={<NotificationPage />} />
-				{/* profile  */}
-				<Route path="/profile" element={<ProfilePage />} />
-				<Route path="/profile-edit" element={<ProfileEditPage />} />
-				<Route path="/setting" element={<SettingPage />} />
+				<Route element={<ProtectedRoutes />}>
+					{/* album  */}
+					<Route path="/" element={<AlbumPage />} />
+					<Route
+						path="/album/detail/:aid"
+						element={<AlbumDetailPage />}
+					/>
+					<Route
+						path="/album/photos/:aid/"
+						element={<AlbumImageListPage />}
+					/>
+					{/* map  */}
+					<Route path="/map" element={<MapPage />} />
+					{/* camera  */}
+					<Route path="/camera" element={<CameraPage />} />
+					{/* notification  */}
+					<Route
+						path="/notification"
+						element={<NotificationPage />}
+					/>
+					{/* profile  */}
+					<Route path="/profile" element={<ProfilePage />} />
+					<Route path="/profile-edit" element={<ProfileEditPage />} />
+					<Route path="/setting" element={<SettingPage />} />
+				</Route>
 			</>
 
 			{/* Auth  */}

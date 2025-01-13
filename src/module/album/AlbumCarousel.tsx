@@ -1,8 +1,12 @@
 import React from "react";
 import Slider from "react-slick";
 import { albumMocks } from "../../mock/albumMocks";
+import useAlbums from "../../hook/useAlbums";
 
 const AlbumCarousel = () => {
+	const { albums } = useAlbums();
+	console.log("🚀 ~ AlbumCarousel ~ albums:", albums)
+
 	const settings = {
 		className: "center",
 		centerMode: true,
@@ -23,7 +27,9 @@ const AlbumCarousel = () => {
 					>
 						<div className="absolute inset-0 flex items-center justify-center text-center text-white bg-black bg-opacity-10">
 							<div>
-								<p className="text-2xl font-medium">{item.title}</p>
+								<p className="text-2xl font-medium">
+									{item.title}
+								</p>
 								<p className="font-medium">
 									{item.images.length}枚
 								</p>
