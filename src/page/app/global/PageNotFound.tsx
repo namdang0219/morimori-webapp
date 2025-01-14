@@ -2,10 +2,20 @@ import React from "react";
 import pageNotFound from "./../../../assets/images/pageNotFound.png";
 import { GoArrowLeft } from "react-icons/go";
 import { useNavigate } from "react-router";
+import useUser from "../../../hook/useUser";
 
 const PageNotFound = () => {
+	const { currentUser } = useUser();
+
 	const navigate = useNavigate();
-	const goBack = () => navigate(-1);
+	const goBack = () => {
+		if (currentUser) {
+			navigate("/album");
+		} else {
+			navigate("/login");
+		}
+		// navigate(-1); // go back to previous page (if available) else go to root route (/) when not authenticated user.
+	};
 
 	return (
 		<div className="flex flex-col items-center justify-center h-svh">
@@ -24,7 +34,7 @@ const PageNotFound = () => {
 			<span className="text-xl">404 ページが存在していない</span>
 			<button
 				className="mt-2 text-sm underline text-primary"
-				onClick={goBack}
+				onClick={() => navigate(-1)}
 			>
 				戻る
 			</button>

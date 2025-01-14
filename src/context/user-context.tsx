@@ -15,6 +15,7 @@ interface UserContextType {
 	userData: IUser | null;
 	setCurrentUser: Dispatch<SetStateAction<User | null>>;
 	loadingUser: boolean;
+	setLoadingUser: Dispatch<SetStateAction<boolean>>;
 }
 
 const UserContext = createContext<UserContextType>({
@@ -22,6 +23,7 @@ const UserContext = createContext<UserContextType>({
 	userData: null,
 	setCurrentUser: () => {},
 	loadingUser: false,
+	setLoadingUser: () => {},
 });
 
 const UserProvider = ({ children }: { children: ReactNode }) => {
@@ -63,6 +65,7 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
 		userData,
 		setCurrentUser,
 		loadingUser,
+		setLoadingUser,
 	};
 
 	return (

@@ -8,8 +8,14 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthInput from "../../components/input/AuthInput";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../../firebaseConfig";
+import { auth, db } from "../../firebaseConfig";
 import useUser from "../../hook/useUser";
+import {
+	doc,
+	serverTimestamp,
+	setDoc,
+} from "firebase/firestore";
+import { IUser } from "../../util/types/IUser";
 
 export type SignupType = {
 	username: string;
@@ -34,7 +40,7 @@ const signupSchema = Yup.object().shape({
 const SignupPage = () => {
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState<boolean>(false);
-	const { setCurrentUser } = useUser();
+	const { setCurrentUser, setLoadingUser } = useUser();
 
 	const {
 		handleSubmit,
@@ -66,7 +72,24 @@ const SignupPage = () => {
 				setCurrentUser(user);
 			}
 			setLoading(false);
+			setLoadingUser(true);
 			navigate("/");
+			setLoadingUser(false);
+
+			//add user to database
+			const newUser: IUser = {
+				uid: user?.uid,
+				displayName: values.username,
+				email: values.email,
+				photoURL: user?.photoURL || "",
+				friends: [],
+				posts: [],
+				albums: [],
+				create_at: serverTimestamp(),
+			};
+			await setDoc(doc(db, "users-v2", newUser.uid), newUser);
+			
+			console.log("User added to database");
 		} catch (error) {
 			console.log(error);
 			setLoading(false);

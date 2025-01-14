@@ -11,18 +11,36 @@ import SectionTitle from "../../../components/title/SectionTitle";
 import { FaChevronRight, FaRegEdit } from "react-icons/fa";
 import { userMocks } from "../../../mock/userMocks";
 import { IUser } from "../../../util/types/IUser";
-import { Drawer } from "antd";
+import { Drawer, Modal } from "antd";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { IoMdCheckmark } from "react-icons/io";
 import { LuImagePlus } from "react-icons/lu";
 import { FaXmark } from "react-icons/fa6";
 import { BsPlus } from "react-icons/bs";
+import { IAlbum } from "../../../util/types/IAlbum";
+import {
+	addDoc,
+	arrayUnion,
+	collection,
+	doc,
+	serverTimestamp,
+	updateDoc,
+} from "firebase/firestore";
+import useUser from "../../../hook/useUser";
+import { db, storage } from "../../../firebaseConfig";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 const AlbumPage = () => {
+	const { currentUser } = useUser();
 	const [openCreateAlbumModal, setOpenCreateAlbumModal] =
 		useState<boolean>(false);
 	const [albumCover, setAlbumCover] = useState<string | null>(null);
+	const [albumCoverFile, setAlbumCoverFile] = useState<any>();
+
 	const inputFileRef = React.useRef<HTMLInputElement>(null);
+	const { userData } = useUser();
+	const [title, setTitle] = useState<string>("");
+	const [desc, setDesc] = useState<string>("");
 
 	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
 		if (e.target.files?.length === 0) {
@@ -33,9 +51,10 @@ const AlbumPage = () => {
 		const file = e.target.files?.[0];
 		if (file) {
 			const url = URL.createObjectURL(file); // Tạo URL tạm thời cho file
+			console.log("🚀 ~ handleChange ~ url:", url);
 			setAlbumCover(url); // Lưu URL vào state
+			setAlbumCoverFile(file);
 		}
-		console.log(e);
 	}
 
 	const showDrawer = () => {
@@ -44,6 +63,61 @@ const AlbumPage = () => {
 
 	const onClose = () => {
 		setOpenCreateAlbumModal(false);
+	};
+
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	const showModal = () => {
+		setIsModalOpen(true);
+	};
+
+	const hideModal = () => {
+		setIsModalOpen(false);
+	};
+
+	const handleCreateAlbum = async () => {
+		if (!albumCover) {
+			if (inputFileRef.current) {
+				inputFileRef.current.click();
+			}
+		}
+		if (!title) {
+			alert("タイトルを入力してください");
+			return;
+		}
+		if (!desc) {
+			alert("説明を入力してください");
+			return;
+		}
+
+		const photosRef = ref(storage, `photos/${Date.now()}.jpg`);
+
+		await uploadBytes(photosRef, albumCoverFile);
+		const downloadUrl = await getDownloadURL(photosRef);
+
+		const newAlbum: IAlbum = {
+			aid: String(serverTimestamp()),
+			author: String(userData?.uid),
+			cover: downloadUrl,
+			create_at: Number(serverTimestamp()),
+			update_at: Number(serverTimestamp()),
+			desc: desc,
+			favorite: false,
+			images: [],
+			taggedFriends: [],
+			title: title,
+		};
+
+		const docRef = await addDoc(collection(db, "albums-v2"), newAlbum);
+		await updateDoc(docRef, {
+			aid: docRef.id,
+		});
+
+		await updateDoc(doc(db, "users-v2", String(currentUser?.uid)), {
+			albums: arrayUnion(docRef.id),
+		});
+
+		console.log("successfully");
 	};
 
 	return (
@@ -67,6 +141,17 @@ const AlbumPage = () => {
 				}
 			/>
 
+			{/* delete modal  */}
+			<Modal
+				title="内容を破壊しますか？"
+				open={isModalOpen}
+				onOk={hideModal}
+				onCancel={hideModal}
+				okText="破壊"
+				cancelText="キャンセル"
+				destroyOnClose
+			></Modal>
+
 			{/* drawer create album  */}
 			<Drawer
 				placement={"bottom"}
@@ -80,13 +165,13 @@ const AlbumPage = () => {
 				<div>
 					{/* header  */}
 					<div className="absolute top-0 left-0 z-40 flex items-center justify-between w-full bg-white h-header-height px-main-padding">
-						<span className="w-10" onClick={onClose}>
+						<span className="w-10" onClick={showModal}>
 							<HiOutlineXMark size={24} className="text-danger" />
 						</span>
 						<span className="text-lg font-medium">
 							新規アルバム
 						</span>
-						<span className="flex w-10">
+						<span className="flex w-10" onClick={handleCreateAlbum}>
 							<IoMdCheckmark
 								size={24}
 								className="ml-auto text-green-500"
@@ -126,13 +211,13 @@ const AlbumPage = () => {
 							) : (
 								<label
 									htmlFor="choose-cover"
-									className="w-full aspect-[3/4] bg-gray-200"
+									className="w-full aspect-[3/4] "
 								>
-									<div className="flex flex-col items-center justify-center h-full gap-4 text-gray-400">
+									<div className="flex flex-col items-center justify-center h-full gap-4 text-gray-400 bg-gray-200">
 										<span>
 											<LuImagePlus size={50} />
 										</span>
-										<div>アルバム画像を選択123</div>
+										<div>アルバム画像を選択</div>
 										<input
 											type="file"
 											id="choose-cover"
@@ -154,6 +239,7 @@ const AlbumPage = () => {
 								</p>
 								<input
 									type="text"
+									onChange={(e) => setTitle(e.target.value)}
 									placeholder="タイトルを入力"
 									className="w-full px-4 py-3 border rounded-lg border-primary"
 								/>
@@ -166,6 +252,7 @@ const AlbumPage = () => {
 								</p>
 								<input
 									type="text"
+									onChange={(e) => setDesc(e.target.value)}
 									placeholder="説明を入力"
 									className="w-full px-4 py-3 border rounded-lg border-primary"
 								/>

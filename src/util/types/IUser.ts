@@ -1,3 +1,4 @@
+import { FieldValue } from "firebase/firestore";
 import { IAlbum } from "./IAlbum";
 
 export interface IUser {
@@ -8,4 +9,5 @@ export interface IUser {
 	posts: string[];
 	friends: string[];
 	albums: IAlbum[];
+	create_at: number | FieldValue;
 }

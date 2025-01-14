@@ -8,13 +8,13 @@ import useUser from "../../../hook/useUser";
 
 const SettingPage = () => {
 	const navigate = useNavigate();
-	const { setUser } = useUser();
+	const { setCurrentUser } = useUser();
 
 	const handleSignout = async () => {
 		try {
 			await signOut(auth);
+			setCurrentUser(null);
 			navigate("/login");
-			setUser(null);
 		} catch (error) {
 			console.log(error);
 		}
