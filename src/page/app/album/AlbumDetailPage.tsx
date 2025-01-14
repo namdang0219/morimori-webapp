@@ -10,6 +10,7 @@ import { IoHeart } from "react-icons/io5";
 import { RiShareForwardFill } from "react-icons/ri";
 import { findUserFromUid } from "../../../util/func/findUserFromUid";
 import { FaPlus } from "react-icons/fa6";
+import ButtonPrimary from "../../../components/button/ButtonPrimary";
 
 const AlbumDetailPage = () => {
 	const navigate = useNavigate();
@@ -131,14 +132,7 @@ const AlbumDetailPage = () => {
 						</p>
 					</div>
 
-					<button
-						className="w-full h-12 rounded-full bg-violet-500"
-						onClick={() => navigate("/album/photos/1")}
-					>
-						<span className="font-medium text-white">
-							写真を見る
-						</span>
-					</button>
+					<ButtonPrimary onClick={() => navigate("/album/photos/1")}>写真を見る</ButtonPrimary>
 				</div>
 			</div>
 		</MainLayout>

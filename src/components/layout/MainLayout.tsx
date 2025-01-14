@@ -8,6 +8,7 @@ const MainLayout = ({
 	children: ReactNode;
 	navHidden?: boolean;
 }) => {
+
 	return (
 		<div className="relative w-screen h-svh">
 			<div>{children}</div>

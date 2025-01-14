@@ -3,12 +3,12 @@ import MainLayout from "../../../components/layout/MainLayout";
 import Header from "../../../components/layout/Header";
 import { IoQrCodeOutline } from "react-icons/io5";
 import { IoSettingsOutline } from "react-icons/io5";
-import { currentUser } from "../../../mock/currentUserMock";
 import { RiEditBoxLine } from "react-icons/ri";
 import { CiShare2 } from "react-icons/ci";
 import { Tabs, TabsProps } from "antd";
 import { imageMocks } from "../../../mock/imageMocks";
 import { useNavigate } from "react-router";
+import useUser from "../../../hook/useUser";
 
 const onChange = (key: string) => {
 	console.log(key);
@@ -69,6 +69,12 @@ const items: TabsProps["items"] = [
 
 const ProfilePage = () => {
 	const navigate = useNavigate();
+	const { userData } = useUser();
+
+	if (!userData) {
+		navigate("/login");
+		return null;
+	}
 
 	return (
 		<MainLayout>
@@ -101,9 +107,9 @@ const ProfilePage = () => {
 				{/* user info  */}
 				<div className="pt-2 mx-auto text-center">
 					<h2 className="text-xl font-semibold">
-						{currentUser.displayName}
+						{userData?.displayName}
 					</h2>
-					<p className="text-sm text-gray-400">{currentUser.email}</p>
+					<p className="text-sm text-gray-400">{userData?.email}</p>
 
 					{/* post and friend number  */}
 					<div className="flex justify-center gap-10 mt-2.5">
@@ -112,7 +118,7 @@ const ProfilePage = () => {
 								投稿
 							</span>
 							<span className="text-xl font-semibold">
-								{currentUser.posts.length}
+								{userData?.posts.length}
 							</span>
 						</div>
 						<div className="flex flex-col justify-center">
@@ -120,7 +126,7 @@ const ProfilePage = () => {
 								友達
 							</span>
 							<span className="text-xl font-semibold">
-								{currentUser.friends.length}
+								{userData?.friends.length}
 							</span>
 						</div>
 					</div>

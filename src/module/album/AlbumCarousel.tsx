@@ -1,8 +1,10 @@
 import React from "react";
 import Slider from "react-slick";
-import { albumMocks } from "../../mock/albumMocks";
+import useAlbums from "../../hook/useAlbums";
 
 const AlbumCarousel = () => {
+	const { albums } = useAlbums();
+
 	const settings = {
 		className: "center",
 		centerMode: true,
@@ -16,14 +18,16 @@ const AlbumCarousel = () => {
 	return (
 		<div className="w-screen overflow-hidden slider-container shrink-0">
 			<Slider {...settings}>
-				{albumMocks.slice(0, 3).map((item, index) => (
+				{albums.slice(0, 3).map((item, index) => (
 					<div
 						key={index}
 						className="flex items-center justify-center relative h-[240px] w-screen"
 					>
 						<div className="absolute inset-0 flex items-center justify-center text-center text-white bg-black bg-opacity-10">
 							<div>
-								<p className="text-2xl font-medium">{item.title}</p>
+								<p className="text-2xl font-medium">
+									{item.title}
+								</p>
 								<p className="font-medium">
 									{item.images.length}枚
 								</p>
