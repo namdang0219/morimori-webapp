@@ -11,8 +11,13 @@ import SectionTitle from "../../../components/title/SectionTitle";
 import { FaChevronRight } from "react-icons/fa";
 import { userMocks } from "../../../mock/userMocks";
 import { IUser } from "../../../util/types/IUser";
+import useUser from "../../../hook/useUser";
 
 const AlbumPage = () => {
+	console.log("nam");
+	const { userData } = useUser();
+	console.log("🚀 ~ AlbumPage ~ userData:", userData)
+
 	return (
 		<MainLayout>
 			{/* header  */}
@@ -61,13 +66,15 @@ const AlbumPage = () => {
 							userMocks.slice(0, 4).map((item: IUser, index) => (
 								<div
 									key={index}
-									className="w-full overflow-hidden rounded-full aspect-square"
+									className="w-full overflow-hidden bg-gray-200 rounded-full aspect-square"
 								>
-									<img
-										src={item.photoURL}
-										alt="user-avatar"
-										className="object-cover object-center w-full h-full"
-									/>
+									{item.photoURL && (
+										<img
+											src={item.photoURL}
+											alt="user-avatar"
+											className="object-cover object-center w-full h-full"
+										/>
+									)}
 								</div>
 							))}
 					</div>

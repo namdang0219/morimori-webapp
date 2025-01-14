@@ -1,45 +1,68 @@
-import React, { createContext, ReactNode, useEffect, useState } from "react";
+import React, {
+	createContext,
+	Dispatch,
+	ReactNode,
+	SetStateAction,
+	useEffect,
+	useState,
+} from "react";
 import { IUser } from "../util/types/IUser";
-import { currentUser } from "../mock/currentUserMock";
 import { auth } from "../firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 
 interface UserContextType {
-	currentUser: IUser | null;
+	currentUser: User | null;
+	userData: IUser | null;
+	setCurrentUser: Dispatch<SetStateAction<User | null>>;
+	loadingUser: boolean;
 }
 
 const UserContext = createContext<UserContextType>({
-	currentUser,
+	currentUser: null,
+	userData: null,
+	setCurrentUser: () => {},
+	loadingUser: false,
 });
 
 const UserProvider = ({ children }: { children: ReactNode }) => {
-	const [user, setUser] = useState<IUser | null>(null);
+	const [currentUser, setCurrentUser] = useState<User | null>(null);
+	const [userData, setUserData] = useState<IUser | null>(null);
+	const [loadingUser, setLoadingUser] = useState<boolean>(false);
 
 	useEffect(() => {
+		setLoadingUser(true);
 		onAuthStateChanged(auth, (user) => {
 			if (user) {
-				// User is signed in, see docs for a list of available properties
-				// https://firebase.google.com/docs/reference/js/auth.user
-				// const uid = user.uid;
-				setUser({
-					displayName: user.displayName,
-					email: user.email,
-					photoURL: user.photoURL,
-					uid: user.uid,
-					friends: [],
-					posts: [],
-				});
-				// ...
+				setCurrentUser(user);
+				setLoadingUser(false);
 			} else {
-				// User is signed out
-				// ...
-				setUser(null);
+				setCurrentUser(null);
+				setLoadingUser(false);
 			}
 		});
-	}, [user]);
+	}, [currentUser]);
+
+	useEffect(() => {
+		if (currentUser) {
+			setUserData({
+				uid: currentUser.uid,
+				displayName: currentUser.displayName,
+				email: currentUser.email,
+				photoURL: currentUser.photoURL,
+				friends: [],
+				posts: [],
+				albums: [],
+			});
+		} else {
+			setUserData(null);
+		}
+	}, [currentUser]);
 
 	const values = {
-		currentUser: user,
+		currentUser,
+		userData,
+		setCurrentUser,
+		loadingUser,
 	};
 
 	return (

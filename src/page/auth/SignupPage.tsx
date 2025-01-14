@@ -1,12 +1,77 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import ButtonPrimary from "../../components/button/ButtonPrimary";
 import MainLayout from "../../components/layout/MainLayout";
 import LoginMethod from "../../module/auth/LoginMethod";
+import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import AuthInput from "../../components/input/AuthInput";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "../../firebaseConfig";
+import useUser from "../../hook/useUser";
+
+export type SignupType = {
+	username: string;
+	email: string;
+	password: string;
+};
+
+const signupSchema = Yup.object().shape({
+	username: Yup.string()
+		.required("ユーザー名を入力してください")
+		.min(5, "ユーザー名を５文字以上入力してください")
+		.max(10, "ユーザー名を10文字以下入力してください"),
+	email: Yup.string()
+		.email("メールを正しく入力しださい")
+		.required("メールを入力しださい"),
+	password: Yup.string()
+		.required("メールを入力しださい")
+		.min(6, "パスワード名を6文字以上入力してください")
+		.max(10, "パスワード名を10文字以下入力してください"),
+});
 
 const SignupPage = () => {
 	const navigate = useNavigate();
-	const handleLogin = () => {};
+	const [loading, setLoading] = useState<boolean>(false);
+	const { setCurrentUser } = useUser();
+
+	const {
+		handleSubmit,
+		register,
+		formState: { isValid, errors },
+	} = useForm<SignupType>({
+		defaultValues: {
+			username: "",
+			email: "",
+			password: "",
+		},
+		resolver: yupResolver(signupSchema),
+	});
+
+	const handleSignup = async (values: SignupType) => {
+		if (!isValid) return;
+		try {
+			setLoading(true);
+			const userCredential = await createUserWithEmailAndPassword(
+				auth,
+				values.email,
+				values.password
+			);
+			const user = userCredential.user;
+			if (user) {
+				await updateProfile(user, {
+					displayName: values.username,
+				});
+				setCurrentUser(user);
+			}
+			setLoading(false);
+			navigate("/");
+		} catch (error) {
+			console.log(error);
+			setLoading(false);
+		}
+	};
 
 	return (
 		<MainLayout navHidden>
@@ -25,36 +90,42 @@ const SignupPage = () => {
 								className="object-cover object-center w-full h-full"
 							/>
 						</div>
-						<div className="flex flex-col items-center gap-5 mb-6">
-							<input
-								type="text"
+						<form className="flex flex-col items-center gap-5">
+							<AuthInput
+								name="username"
 								placeholder="ユーザー名"
-								className="w-[100%] px-4 py-3 rounded-lg border border-primary "
+								register={register}
+								errorMessage={errors.username?.message}
 							/>
-							<input
-								type="text"
+							<AuthInput
+								name="email"
 								placeholder="メール"
-								className="w-[100%] px-4 py-3 rounded-lg border border-primary "
+								register={register}
+								errorMessage={errors.email?.message}
 							/>
-							<input
-								type="text"
+							<AuthInput
+								name="password"
 								placeholder="パスワード"
-								className="w-[100%] px-4 py-3 rounded-lg border border-primary "
+								register={register}
+								errorMessage={errors.password?.message}
 							/>
-						</div>
-
-						<ButtonPrimary onClick={handleLogin}>
-							ログイン
-						</ButtonPrimary>
+							<ButtonPrimary
+								type="submit"
+								onClick={handleSubmit(handleSignup)}
+								loading={loading}
+							>
+								登録
+							</ButtonPrimary>
+						</form>
 
 						<div className="mt-4 text-sm text-center">
 							<span>
-								アカウントお持ちでない方？
+								既にアカウントをお持ちの方？
 								<button
 									onClick={() => navigate("/login")}
 									className="font-semibold text-primary"
 								>
-									新規登録
+									ログイン
 								</button>
 							</span>
 						</div>

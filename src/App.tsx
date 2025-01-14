@@ -12,14 +12,29 @@ import React from "react";
 import AlbumImageListPage from "./page/app/album/AlbumImageListPage";
 import ProfileEditPage from "./page/app/profile/ProfileEditPage";
 import SettingPage from "./page/app/profile/SettingPage";
-import ProtectedRoutes from "./ProtectedRoutes";
+import useUser from "./hook/useUser";
 
 const App = () => {
+	const { currentUser, loadingUser } = useUser();
+
+	if (loadingUser) {
+		return (
+			<div className="absolute inset-0 flex-col flex items-center justify-center bg-white z-[100000]">
+				<div className="user-loader"></div>
+				<div className="mt-10 text-lg font-medium">
+					<span className="text-primary">モリモリ</span>
+					へようこそ！
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<Routes>
-			{/* App  */}
-			<>
-				<Route element={<ProtectedRoutes />}>
+			{currentUser ? (
+				// App
+				<>
+					{/* <Route element={<ProtectedRoutes />}> */}
 					{/* album  */}
 					<Route path="/" element={<AlbumPage />} />
 					<Route
@@ -43,15 +58,15 @@ const App = () => {
 					<Route path="/profile" element={<ProfilePage />} />
 					<Route path="/profile-edit" element={<ProfileEditPage />} />
 					<Route path="/setting" element={<SettingPage />} />
-				</Route>
-			</>
-
-			{/* Auth  */}
-			<>
-				<Route path="/login" element={<LoginPage />} />
-				<Route path="/signup" element={<SignupPage />} />
-			</>
-
+					{/* </Route> */}
+				</>
+			) : (
+				// Auth
+				<>
+					<Route path="/login" element={<LoginPage />} />
+					<Route path="/signup" element={<SignupPage />} />
+				</>
+			)}
 			{/* Global  */}
 			<Route path="*" element={<PageNotFound />} />
 		</Routes>

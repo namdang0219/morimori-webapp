@@ -1,12 +1,73 @@
-import React from "react";
+import React, { useState } from "react";
 import MainLayout from "../../components/layout/MainLayout";
 import ButtonPrimary from "../../components/button/ButtonPrimary";
 import { useNavigate } from "react-router";
 import LoginMethod from "../../module/auth/LoginMethod";
+import useUser from "../../hook/useUser";
+import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import AuthInput from "../../components/input/AuthInput";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebaseConfig";
+
+export type LoginType = {
+	email: string;
+	password: string;
+};
+
+const loginSchema = Yup.object().shape({
+	email: Yup.string()
+		.email("メールを正しく入力しださい")
+		.required("メールを入力しださい"),
+	password: Yup.string()
+		.required("メールを入力しださい")
+		.min(6, "パスワード名を6文字以上入力してください")
+		.max(10, "パスワード名を10文字以下入力してください"),
+});
 
 const LoginPage = () => {
 	const navigate = useNavigate();
-	const handleLogin = () => {};
+	const [loading, setLoading] = useState<boolean>(false);
+	const { setCurrentUser } = useUser();
+
+	const {
+		handleSubmit,
+		register,
+		reset,
+		formState: { isValid, errors },
+	} = useForm<LoginType>({
+		defaultValues: {
+			email: "",
+			password: "",
+		},
+		resolver: yupResolver(loginSchema),
+	});
+
+	const handleLogin = async (values: LoginType) => {
+		if (!isValid) return;
+		try {
+			setLoading(true);
+			const credentialUser = await signInWithEmailAndPassword(
+				auth,
+				values.email,
+				values.password
+			);
+			if (credentialUser) {
+				setCurrentUser(credentialUser.user);
+			}
+			setLoading(false);
+			reset();
+			navigate("/");
+		} catch (error: any) {
+			console.log(error);
+			if (error.code === "auth/invalid-credential") {
+				alert("ユーザーが存在していません");
+			}
+			setLoading(false);
+			reset();
+		}
+	};
 
 	return (
 		<MainLayout navHidden>
@@ -26,15 +87,17 @@ const LoginPage = () => {
 							/>
 						</div>
 						<div className="flex flex-col items-center gap-5 mb-4">
-							<input
-								type="text"
+							<AuthInput
+								name="email"
+								register={register}
 								placeholder="メール"
-								className="w-[100%] px-4 py-3 rounded-lg border border-primary "
+								errorMessage={errors.email?.message}
 							/>
-							<input
-								type="text"
+							<AuthInput
+								name="password"
+								register={register}
 								placeholder="パスワード"
-								className="w-[100%] px-4 py-3 rounded-lg border border-primary "
+								errorMessage={errors.password?.message}
 							/>
 
 							<button className="ml-auto text-sm text-primary">
@@ -42,7 +105,10 @@ const LoginPage = () => {
 							</button>
 						</div>
 
-						<ButtonPrimary onClick={handleLogin}>
+						<ButtonPrimary
+							loading={loading}
+							onClick={handleSubmit(handleLogin)}
+						>
 							ログイン
 						</ButtonPrimary>
 

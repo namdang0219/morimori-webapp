@@ -1,3 +1,5 @@
+import { IAlbum } from "./IAlbum";
+
 export interface IUser {
 	uid: string;
 	displayName: string | null;
@@ -5,4 +7,5 @@ export interface IUser {
 	photoURL: string | null;
 	posts: string[];
 	friends: string[];
+	albums: IAlbum[];
 }
