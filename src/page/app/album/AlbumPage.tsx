@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import MainLayout from "../../../components/layout/MainLayout";
 import { IoAdd } from "react-icons/io5";
 import AlbumCarousel from "../../../module/album/AlbumCarousel";
@@ -8,15 +8,43 @@ import AlbumHorizontalList from "../../../components/section/AlbumHorizontalList
 import Header from "../../../components/layout/Header";
 import { albumMocks } from "../../../mock/albumMocks";
 import SectionTitle from "../../../components/title/SectionTitle";
-import { FaChevronRight } from "react-icons/fa";
+import { FaChevronRight, FaRegEdit } from "react-icons/fa";
 import { userMocks } from "../../../mock/userMocks";
 import { IUser } from "../../../util/types/IUser";
-import useUser from "../../../hook/useUser";
+import { Drawer } from "antd";
+import { HiOutlineXMark } from "react-icons/hi2";
+import { IoMdCheckmark } from "react-icons/io";
+import { LuImagePlus } from "react-icons/lu";
+import { FaXmark } from "react-icons/fa6";
+import { BsPlus } from "react-icons/bs";
 
 const AlbumPage = () => {
-	console.log("nam");
-	const { userData } = useUser();
-	console.log("🚀 ~ AlbumPage ~ userData:", userData)
+	const [openCreateAlbumModal, setOpenCreateAlbumModal] =
+		useState<boolean>(false);
+	const [albumCover, setAlbumCover] = useState<string | null>(null);
+	const inputFileRef = React.useRef<HTMLInputElement>(null);
+
+	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+		if (e.target.files?.length === 0) {
+			if (inputFileRef.current) {
+				inputFileRef.current.click();
+			}
+		}
+		const file = e.target.files?.[0];
+		if (file) {
+			const url = URL.createObjectURL(file); // Tạo URL tạm thời cho file
+			setAlbumCover(url); // Lưu URL vào state
+		}
+		console.log(e);
+	}
+
+	const showDrawer = () => {
+		setOpenCreateAlbumModal(true);
+	};
+
+	const onClose = () => {
+		setOpenCreateAlbumModal(false);
+	};
 
 	return (
 		<MainLayout>
@@ -30,7 +58,7 @@ const AlbumPage = () => {
 							contents={[
 								{
 									label: "Add New Album",
-									onClick: () => {},
+									onClick: showDrawer,
 									icon: <IoAdd size={18} />,
 								},
 							]}
@@ -38,6 +66,150 @@ const AlbumPage = () => {
 					</>
 				}
 			/>
+
+			{/* drawer create album  */}
+			<Drawer
+				placement={"bottom"}
+				closable={false}
+				onClose={onClose}
+				open={openCreateAlbumModal}
+				key={"createAlbumDrawer"}
+				height={"100%"}
+				styles={{ body: { padding: 0 } }}
+			>
+				<div>
+					{/* header  */}
+					<div className="absolute top-0 left-0 z-40 flex items-center justify-between w-full bg-white h-header-height px-main-padding">
+						<span className="w-10" onClick={onClose}>
+							<HiOutlineXMark size={24} className="text-danger" />
+						</span>
+						<span className="text-lg font-medium">
+							新規アルバム
+						</span>
+						<span className="flex w-10">
+							<IoMdCheckmark
+								size={24}
+								className="ml-auto text-green-500"
+							/>
+						</span>
+					</div>
+
+					{/* body  */}
+					<div className="pb-20 pt-header-height">
+						<div className="w-full relative aspect-[3/4]">
+							{albumCover ? (
+								<>
+									<img
+										src={albumCover}
+										alt="album-cover"
+										className="object-cover object-center w-full h-full"
+									/>
+									<div className="absolute text-white opacity-80 bottom-5 right-5">
+										<label htmlFor="choose-cover">
+											<FaRegEdit
+												size={30}
+												className="shadow-lg"
+											/>
+											<input
+												type="file"
+												id="choose-cover"
+												ref={inputFileRef}
+												onChange={(e) =>
+													handleChange(e)
+												}
+												accept="image/*"
+												className="hidden"
+											/>
+										</label>
+									</div>
+								</>
+							) : (
+								<label
+									htmlFor="choose-cover"
+									className="w-full aspect-[3/4] bg-gray-200"
+								>
+									<div className="flex flex-col items-center justify-center h-full gap-4 text-gray-400">
+										<span>
+											<LuImagePlus size={50} />
+										</span>
+										<div>アルバム画像を選択123</div>
+										<input
+											type="file"
+											id="choose-cover"
+											ref={inputFileRef}
+											onChange={(e) => handleChange(e)}
+											accept="image/*"
+											className="hidden"
+										/>
+									</div>
+								</label>
+							)}
+						</div>
+
+						<div className="flex flex-col gap-5 p-main-padding">
+							{/* title  */}
+							<div>
+								<p className="mb-1 font-medium text-primary">
+									タイトル
+								</p>
+								<input
+									type="text"
+									placeholder="タイトルを入力"
+									className="w-full px-4 py-3 border rounded-lg border-primary"
+								/>
+							</div>
+
+							{/* desc  */}
+							<div>
+								<p className="mb-1 font-medium text-primary">
+									説明
+								</p>
+								<input
+									type="text"
+									placeholder="説明を入力"
+									className="w-full px-4 py-3 border rounded-lg border-primary"
+								/>
+							</div>
+
+							{/* pick user  */}
+							<div>
+								<p className="mb-1 font-medium text-primary">
+									友達
+								</p>
+								<div className="grid grid-cols-4 gap-3">
+									{Array(5)
+										.fill(0)
+										.map((item, index) => (
+											<div
+												key={index}
+												className="relative flex-1"
+											>
+												<img
+													src="https://i.pinimg.com/736x/69/b6/c9/69b6c939d19b9befede02bce32fb1b5f.jpg"
+													alt="friend-cover-img"
+													className="object-cover object-center w-full h-full rounded-full"
+												/>
+												<div className="absolute top-0 right-0 flex items-center justify-center w-6 bg-white rounded-full shadow-lg aspect-square">
+													<FaXmark
+														size={18}
+														className="text-gray-400"
+													/>
+												</div>
+											</div>
+										))}
+
+									<div className="relative flex items-center justify-center flex-1 bg-gray-200 rounded-full">
+										<BsPlus
+											size={40}
+											className="text-gray-400"
+										/>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</Drawer>
 
 			{/* main  */}
 			<div className="flex flex-col gap-6 overflow-y-scroll pb-28 h-svh pt-header-height">
