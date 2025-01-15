@@ -29,9 +29,13 @@ import {
 import useUser from "../../../hook/useUser";
 import { db, storage } from "../../../firebaseConfig";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import useAlbums from "../../../hook/useAlbums";
+import { useAppState } from "../../../hook/userAppState";
 
 const AlbumPage = () => {
 	const { currentUser } = useUser();
+	const { albums } = useAlbums();
+	const { setAppStateLoading } = useAppState();
 	const [openCreateAlbumModal, setOpenCreateAlbumModal] =
 		useState<boolean>(false);
 	const [albumCover, setAlbumCover] = useState<string | null>(null);
@@ -61,10 +65,6 @@ const AlbumPage = () => {
 		setOpenCreateAlbumModal(true);
 	};
 
-	const onClose = () => {
-		setOpenCreateAlbumModal(false);
-	};
-
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	const showModal = () => {
@@ -73,6 +73,7 @@ const AlbumPage = () => {
 
 	const hideModal = () => {
 		setIsModalOpen(false);
+		setOpenCreateAlbumModal(false);
 	};
 
 	const handleCreateAlbum = async () => {
@@ -89,7 +90,7 @@ const AlbumPage = () => {
 			alert("説明を入力してください");
 			return;
 		}
-
+		setAppStateLoading(true);
 		const photosRef = ref(storage, `photos/${Date.now()}.jpg`);
 
 		await uploadBytes(photosRef, albumCoverFile);
@@ -99,8 +100,8 @@ const AlbumPage = () => {
 			aid: String(serverTimestamp()),
 			author: String(userData?.uid),
 			cover: downloadUrl,
-			create_at: Number(serverTimestamp()),
-			update_at: Number(serverTimestamp()),
+			create_at: serverTimestamp(),
+			update_at: serverTimestamp(),
 			desc: desc,
 			favorite: false,
 			images: [],
@@ -117,6 +118,10 @@ const AlbumPage = () => {
 			albums: arrayUnion(docRef.id),
 		});
 
+		// clear modal and loading state 
+		setAppStateLoading(false);
+		setIsModalOpen(false);
+		setOpenCreateAlbumModal(false);
 		console.log("successfully");
 	};
 
@@ -156,7 +161,6 @@ const AlbumPage = () => {
 			<Drawer
 				placement={"bottom"}
 				closable={false}
-				onClose={onClose}
 				open={openCreateAlbumModal}
 				key={"createAlbumDrawer"}
 				height={"100%"}
@@ -305,7 +309,7 @@ const AlbumPage = () => {
 				{/* recently album  */}
 				<AlbumHorizontalList
 					title="最近のアルバム"
-					contents={albumMocks}
+					contents={albums}
 					seeMoreHref="/"
 				/>
 

@@ -62,13 +62,13 @@
 }
 
 // loading user
-.user-loader {
+.app-loader {
 	width: calc(100px - 24px);
 	height: 20px;
 	position: relative;
 	animation: flippx 2s infinite linear;
 }
-.user-loader:before {
+.app-loader:before {
 	content: "";
 	position: absolute;
 	inset: 0;
@@ -80,7 +80,7 @@
 	animation: spin 1s infinite linear;
 	@apply bg-primary;
 }
-.user-loader:after {
+.app-loader:after {
 	content: "";
 	position: absolute;
 	left: 50%;

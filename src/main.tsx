@@ -7,15 +7,18 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { AlbumsProvider } from "./context/albums-context.tsx";
 import { UserProvider } from "./context/user-context.tsx";
+import { AppStateProvider } from "./context/app-state-context.tsx";
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<BrowserRouter>
-			<UserProvider>
-				<AlbumsProvider>
-					<App />
-				</AlbumsProvider>
-			</UserProvider>
+			<AppStateProvider>
+				<UserProvider>
+					<AlbumsProvider>
+						<App />
+					</AlbumsProvider>
+				</UserProvider>
+			</AppStateProvider>
 		</BrowserRouter>
 	</StrictMode>
 );

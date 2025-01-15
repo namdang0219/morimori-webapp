@@ -20,7 +20,7 @@ const App = () => {
 	if (loadingUser) {
 		return (
 			<div className="absolute inset-0 flex-col flex items-center justify-center bg-white z-[100000]">
-				<div className="user-loader"></div>
+				<div className="app-loader"></div>
 				<div className="mt-10 text-lg font-medium">
 					<span className="text-primary">モリモリ</span>
 					へようこそ！
