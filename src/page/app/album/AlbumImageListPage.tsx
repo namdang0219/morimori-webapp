@@ -4,9 +4,6 @@ import Header from "../../../components/layout/Header";
 import OptionPopover from "../../../components/popover/OptionPopover";
 import { IoAdd } from "react-icons/io5";
 import { IoMdShare } from "react-icons/io";
-import "yet-another-react-lightbox/styles.css";
-import "yet-another-react-lightbox/plugins/captions.css";
-import "yet-another-react-lightbox/plugins/thumbnails.css";
 import { useParams } from "react-router";
 import useAlbums from "../../../hook/useAlbums";
 import {

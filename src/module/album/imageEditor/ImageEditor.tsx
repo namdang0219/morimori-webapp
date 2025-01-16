@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import { IImage } from "../../../util/types/IImage";
 import { FaXmark } from "react-icons/fa6";
 import "./ImageEditor.scss";
@@ -12,6 +12,16 @@ import {
 import { IoMdContrast } from "react-icons/io";
 import { Drawer, Slider } from "antd";
 import { toast } from "react-toastify";
+import Draggable from "react-draggable";
+
+type ISticker = {
+	sid: string;
+	url: string;
+	x: number;
+	y: number;
+	scale: number;
+	rotate: number;
+};
 
 const ImageEditor = ({
 	image,
@@ -45,6 +55,85 @@ const ImageEditor = ({
 
 	// handle sticker modal
 	const [stikerModalOpen, setStickerModalOpen] = useState<boolean>(false);
+	const [stickers, setStickers] = useState<ISticker[]>([]);
+	const [selectedSticker, setSelectedSticker] = useState<string | null>(null);
+	const imageRef = useRef(null);
+
+	// Thêm sticker mới
+	const addSticker = (stickerUrl: string) => {
+		const newSticker: ISticker = {
+			sid: String(Date.now()),
+			url: stickerUrl,
+			x: 150,
+			y: -200,
+			scale: 1,
+			rotate: 90,
+		};
+		setStickers([...stickers, newSticker]);
+	};
+
+	// Xóa sticker
+	const removeSticker = (sid: string) => {
+		setStickers(stickers.filter((sticker) => sticker.sid !== sid));
+	};
+
+	// Cập nhật sticker
+	const updateSticker = (sid: string, updates: any) => {
+		setStickers(
+			stickers.map((sticker) =>
+				sticker.sid === sid ? { ...sticker, ...updates } : sticker
+			)
+		);
+	};
+
+	// Tải ảnh lên Firebase
+	const uploadToFirebase = async () => {
+		try {
+			const canvas = document.createElement("canvas");
+			const ctx = canvas.getContext("2d");
+			const img = imageRef.current;
+
+			if (!img || !ctx) return;
+
+			// Kích thước canvas
+			canvas.width = img.naturalHeight;
+			canvas.height = img.naturalHeight;
+
+			// Áp dụng bộ lọc ảnh
+			ctx.filter = `brightness(${brightness}%) saturate(${saturation}%) contrast(${contrast}%) hue-rotate(${hue}deg)`;
+			ctx.drawImage(img, 0, 0);
+
+			// Vẽ sticker lên canvas
+			stickers.forEach((sticker) => {
+				const imgSticker = new Image();
+				imgSticker.src = sticker.url;
+				ctx.save();
+				ctx.translate(
+					sticker.x + imgSticker.width / 2,
+					sticker.y + imgSticker.height / 2
+				);
+				ctx.rotate((sticker.rotate * Math.PI) / 180);
+				ctx.scale(sticker.scale, sticker.scale);
+				ctx.translate(-imgSticker.width / 2, -imgSticker.height / 2);
+				ctx.drawImage(imgSticker, 0, 0);
+				ctx.restore();
+			});
+
+			// Chuyển canvas thành dữ liệu base64
+			const dataUrl = canvas.toDataURL();
+
+			if (!dataUrl) return;
+
+			// Upload lên Firebase
+			// const storage = getStorage();
+			// const storageRef = ref(storage, `edited-image-${Date.now()}.png`);
+			// await uploadString(storageRef, dataUrl, "data_url");
+			alert("Image uploaded to Firebase successfully!");
+		} catch (error) {
+			console.log(error);
+			toast.error("失敗しました！");
+		}
+	};
 
 	return (
 		<div className="relative flex items-center justify-center w-full bg-black h-svh">
@@ -67,6 +156,7 @@ const ImageEditor = ({
 				</div>
 			</div>
 
+			{/* sticker modal  */}
 			<Drawer
 				placement={"bottom"}
 				closable={false}
@@ -82,11 +172,20 @@ const ImageEditor = ({
 						{Array(20)
 							.fill(0)
 							.map((item, index) => (
-								<div key={index} className="w-full aspect-square">
+								<div
+									className="w-full aspect-square"
+									key={index}
+									onClick={() => {
+										addSticker(
+											"https://i.pinimg.com/736x/bb/af/14/bbaf14319836e84fd2520c91bc7c3d7f.jpg"
+										);
+										setStickerModalOpen(false);
+									}}
+								>
 									<img
-										src="https://i.pinimg.com/736x/c0/27/49/c027490c674ecee85e240035e960cbc0.jpg"
-										alt="sticker"
-                                        className="object-contain object-center w-full h-full"
+										src="https://i.pinimg.com/736x/bb/af/14/bbaf14319836e84fd2520c91bc7c3d7f.jpg"
+										alt="img"
+										className="object-contain object-center w-full h-full"
 									/>
 								</div>
 							))}
@@ -94,15 +193,79 @@ const ImageEditor = ({
 				</div>
 			</Drawer>
 
-			<img
-				src={image.uri}
-				alt="selected-image"
-				className="object-contain w-full"
-				style={{
-					filter: `brightness(${brightness}%) saturate(${saturation}%) contrast(${contrast}%) hue-rotate(${hue}deg)`,
-				}}
-			/>
+			<div className="">
+				<img
+					src={image.uri}
+					alt="selected-image"
+					className="object-contain w-full"
+					style={{
+						filter: `brightness(${brightness}%) saturate(${saturation}%) contrast(${contrast}%) hue-rotate(${hue}deg)`,
+					}}
+				/>
 
+				{/* Sticker */}
+				{stickers.map((sticker) => (
+					<Draggable
+						key={sticker.sid}
+						defaultPosition={{ x: sticker.x, y: sticker.y }}
+						onStop={(e, data) =>
+							updateSticker(sticker.sid, { x: data.x, y: data.y })
+						}
+					>
+						<div
+							style={{
+								position: "absolute",
+								transform: `scale(${sticker.scale}) rotate(${sticker.rotate}deg)`,
+							}}
+							onClick={() => {
+								setSelectedSticker(sticker.sid);
+								console.log(selectedSticker);
+							}}
+						>
+							<div className="relative">
+								<img
+									src={sticker.url}
+									alt="Sticker"
+									style={{ width: 100 }}
+								/>
+								{selectedSticker === sticker.sid && (
+									<button
+										className="absolute top-0 left-0 z-40"
+										onClick={() =>
+											removeSticker(sticker.sid)
+										}
+									>
+										<FaXmark size={20} color="white" />
+									</button>
+								)}
+							</div>
+						</div>
+					</Draggable>
+				))}
+
+				{selectedSticker && (
+					<div className="absolute bottom-[80px] w-screen h-5">
+						<label>Rotate</label>
+						<input
+							type="range"
+							min="0"
+							max="360"
+							value={
+								stickers.find(
+									(sticker) => sticker.sid === selectedSticker
+								)?.rotate || 0
+							}
+							onChange={(e) =>
+								updateSticker(selectedSticker, {
+									rotate: parseInt(e.target.value, 10),
+								})
+							}
+						/>
+					</div>
+				)}
+			</div>
+
+			{/* bottom container  */}
 			<div
 				className={`absolute bottom-0 left-0 flex items-center w-full text-xs text-gray-300 justify-evenly h-header-height`}
 			>

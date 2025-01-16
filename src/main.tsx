@@ -11,33 +11,33 @@ import { AppStateProvider } from "./context/app-state-context.tsx";
 import { Slide, ToastContainer } from "react-toastify";
 
 createRoot(document.getElementById("root")!).render(
-	<StrictMode>
-		<BrowserRouter>
-			<AppStateProvider>
-				<UserProvider>
-					<AlbumsProvider>
-						<ToastContainer
-							position="top-center"
-							autoClose={3000}
-							hideProgressBar={true}
-							newestOnTop={true}
-							rtl={false}
-							pauseOnFocusLoss
-							draggable
-							pauseOnHover
-							theme="light"
-							transition={Slide}
-							style={{
-								width: "80%",
-								left: "50%",
-								transform: "translateX(-50%)",
-								top: 20
-							}}
-						/>
-						<App />
-					</AlbumsProvider>
-				</UserProvider>
-			</AppStateProvider>
-		</BrowserRouter>
-	</StrictMode>
+	// <StrictMode>
+	<BrowserRouter>
+		<AppStateProvider>
+			<UserProvider>
+				<AlbumsProvider>
+					<ToastContainer
+						position="top-center"
+						autoClose={3000}
+						hideProgressBar={true}
+						newestOnTop={true}
+						rtl={false}
+						pauseOnFocusLoss
+						draggable
+						pauseOnHover
+						theme="light"
+						transition={Slide}
+						style={{
+							width: "80%",
+							left: "50%",
+							transform: "translateX(-50%)",
+							top: 20,
+						}}
+					/>
+					<App />
+				</AlbumsProvider>
+			</UserProvider>
+		</AppStateProvider>
+	</BrowserRouter>
+	// </StrictMode>
 );
