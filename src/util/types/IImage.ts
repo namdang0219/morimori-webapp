@@ -1,3 +1,4 @@
+import { FieldValue } from "firebase/firestore";
 import { IAlbum } from "./IAlbum";
 import { IUser } from "./IUser";
 
@@ -10,6 +11,6 @@ export interface IImage {
 		lat: number;
 		long: number;
 	};
-	create_at: number;
-	update_at: number;
+	create_at: string | FieldValue;
+	update_at: string | FieldValue;
 }

@@ -19,7 +19,7 @@ const Header = ({
 
 	return (
 		<div
-			className={`absolute flex z-[1000] items-center justify-between w-full  h-header-height px-main-padding ${containerClassName}`}
+			className={`absolute flex z-[100] items-center justify-between w-full  h-header-height px-main-padding ${containerClassName}`}
 		>
 			{largeTitle && (
 				<h1 className="text-2xl font-semibold">{largeTitle}</h1>

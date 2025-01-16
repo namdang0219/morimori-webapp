@@ -11,6 +11,6 @@ export interface IAlbum {
 	favorite: boolean;
 	taggedFriends: IUser["uid"][];
 	images: IImage["iid"][];
-	create_at: number | FieldValue;
-	update_at: number | FieldValue;
+	create_at: string | number | FieldValue;
+	update_at: string | number | FieldValue;
 }

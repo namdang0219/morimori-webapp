@@ -118,7 +118,7 @@ const AlbumPage = () => {
 			albums: arrayUnion(docRef.id),
 		});
 
-		// clear modal and loading state 
+		// clear modal and loading state
 		setAppStateLoading(false);
 		setIsModalOpen(false);
 		setOpenCreateAlbumModal(false);
@@ -316,8 +316,8 @@ const AlbumPage = () => {
 				<div>
 					<div className="flex items-center justify-between mb-2 px-main-padding">
 						<SectionTitle>友達と</SectionTitle>
-						<button className="flex items-center gap-1 text-sm text-gray-400">
-							すべて
+						<button className="flex flex-row items-center gap-1 text-sm text-gray-400">
+							<span className="ml-auto">すべて</span>
 							<span>
 								<FaChevronRight size={14} />
 							</span>
@@ -344,7 +344,9 @@ const AlbumPage = () => {
 				</div>
 				<AlbumHorizontalList
 					title="お気に入り"
-					contents={albumMocks}
+					contents={albums.filter(
+						(album: IAlbum) => album.favorite === true
+					)}
 					seeMoreHref="/"
 				/>
 

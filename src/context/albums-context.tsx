@@ -2,6 +2,7 @@ import React, { createContext, ReactNode, useEffect, useState } from "react";
 import { IAlbum } from "../util/types/IAlbum";
 import {
 	collection,
+	FieldValue,
 	onSnapshot,
 	orderBy,
 	query,
@@ -9,6 +10,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import useUser from "../hook/useUser";
+import { handleTimestampToString } from "../util/func/handleTimestampToString";
 
 interface AlbumsContextType {
 	albums: IAlbum[];
@@ -33,7 +35,18 @@ const AlbumsProvider = ({ children }: { children: ReactNode }) => {
 			querySnapshot.forEach((doc) => {
 				albums.push(doc.data() as IAlbum);
 			});
-			setRemoteAlbums(albums.reverse());
+			const albumWithJsData: IAlbum[] = albums.map((album) => {
+				return {
+					...album,
+					create_at: handleTimestampToString(
+						album.create_at as FieldValue
+					) as string,
+					update_at: handleTimestampToString(
+						album.update_at as FieldValue
+					) as string,
+				};
+			});
+			setRemoteAlbums(albumWithJsData.reverse());
 		});
 	}, [userData]);
 

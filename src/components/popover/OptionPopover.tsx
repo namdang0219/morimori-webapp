@@ -8,7 +8,13 @@ interface IContent {
 	icon: React.ReactNode;
 }
 
-const OptionPopover = ({ contents }: { contents: IContent[] }) => {
+const OptionPopover = ({
+	contents,
+	iconClassName = "",
+}: {
+	contents: IContent[];
+	iconClassName?: string;
+}) => {
 	const content = (
 		<div className="w-44">
 			{contents.length > 0 &&
@@ -28,7 +34,7 @@ const OptionPopover = ({ contents }: { contents: IContent[] }) => {
 	return (
 		<Popover content={content} placement="bottomRight" trigger="click">
 			<span>
-				<BsThreeDots size={22} />
+				<BsThreeDots size={22} className={iconClassName} />
 			</span>
 		</Popover>
 	);
