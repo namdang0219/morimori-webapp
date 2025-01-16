@@ -12,9 +12,10 @@ import {
 import { IoMdContrast } from "react-icons/io";
 import { Drawer, Slider } from "antd";
 import { toast } from "react-toastify";
-import Draggable from "react-draggable";
+import DraggableSticker from "../../../components/sticker/DraggableSticker";
+import { useOnClickOutside } from "usehooks-ts";
 
-type ISticker = {
+export type ISticker = {
 	sid: string;
 	url: string;
 	x: number;
@@ -35,6 +36,14 @@ const ImageEditor = ({
 	const [saturation, setSaturation] = useState(100);
 	const [contrast, setContrast] = useState(100);
 	const [hue, setHue] = useState(0);
+
+	const sliderRef = useRef(null);
+
+	const handleClickOutsideSlider = () => {
+        setActiveFilter(null);
+    };
+
+	useOnClickOutside(sliderRef, handleClickOutsideSlider);
 
 	const [activeFilter, setActiveFilter] = useState<
 		"brightness" | "saturation" | "contrast" | "hue" | null
@@ -59,13 +68,17 @@ const ImageEditor = ({
 	const [selectedSticker, setSelectedSticker] = useState<string | null>(null);
 	const imageRef = useRef(null);
 
+	console.log("🚀 ~ stickers:", stickers);
+	console.log("🚀 ~ selectedSticker:", selectedSticker);
+
 	// Thêm sticker mới
+
 	const addSticker = (stickerUrl: string) => {
 		const newSticker: ISticker = {
-			sid: String(Date.now()),
+			sid: String(Math.floor(Math.random() * (100 - 1 + 1))),
 			url: stickerUrl,
-			x: 150,
-			y: -200,
+			x: 0,
+			y: 100,
 			scale: 1,
 			rotate: 90,
 		};
@@ -136,7 +149,7 @@ const ImageEditor = ({
 	};
 
 	return (
-		<div className="relative flex items-center justify-center w-full bg-black h-svh">
+		<div className="relative flex items-center justify-center w-full overflow-hidden bg-black h-svh">
 			{/* header  */}
 			<div className="absolute top-0 left-0 flex items-center justify-between w-full px-main-padding h-header-height">
 				<span onClick={() => setEditModalOpen(false)}>
@@ -203,71 +216,17 @@ const ImageEditor = ({
 					}}
 				/>
 
-				{/* Sticker */}
-				{stickers.map((sticker) => (
-					<Draggable
-						key={sticker.sid}
-						defaultPosition={{ x: sticker.x, y: sticker.y }}
-						onStop={(e, data) =>
-							updateSticker(sticker.sid, { x: data.x, y: data.y })
-						}
-					>
-						<div
-							style={{
-								position: "absolute",
-								transform: `scale(${sticker.scale}) rotate(${sticker.rotate}deg)`,
-							}}
-							onClick={() => {
-								setSelectedSticker(sticker.sid);
-								console.log(selectedSticker);
-							}}
-						>
-							<div className="relative">
-								<img
-									src={sticker.url}
-									alt="Sticker"
-									style={{ width: 100 }}
-								/>
-								{selectedSticker === sticker.sid && (
-									<button
-										className="absolute top-0 left-0 z-40"
-										onClick={() =>
-											removeSticker(sticker.sid)
-										}
-									>
-										<FaXmark size={20} color="white" />
-									</button>
-								)}
-							</div>
+				{stickers.length > 0 &&
+					stickers.map((sticker) => (
+						<div key={sticker.sid}>
+							<DraggableSticker sticker={sticker} />
 						</div>
-					</Draggable>
-				))}
-
-				{selectedSticker && (
-					<div className="absolute bottom-[80px] w-screen h-5">
-						<label>Rotate</label>
-						<input
-							type="range"
-							min="0"
-							max="360"
-							value={
-								stickers.find(
-									(sticker) => sticker.sid === selectedSticker
-								)?.rotate || 0
-							}
-							onChange={(e) =>
-								updateSticker(selectedSticker, {
-									rotate: parseInt(e.target.value, 10),
-								})
-							}
-						/>
-					</div>
-				)}
+					))}
 			</div>
 
 			{/* bottom container  */}
 			<div
-				className={`absolute bottom-0 left-0 flex items-center w-full text-xs text-gray-300 justify-evenly h-header-height`}
+				className={`absolute border-t border-t-gray-700 bottom-0 left-0 flex items-center w-full text-xs text-gray-300 justify-evenly h-[56px]`}
 			>
 				<button
 					onClick={() =>
@@ -310,7 +269,7 @@ const ImageEditor = ({
 				</button>
 
 				{activeFilter === "brightness" && (
-					<div className="slider">
+					<div className="slider" ref={sliderRef}>
 						<label>明るさ: {brightness}%</label>
 						<Slider
 							defaultValue={30}
@@ -330,7 +289,7 @@ const ImageEditor = ({
 				)}
 
 				{activeFilter === "saturation" && (
-					<div className="slider">
+					<div className="slider" ref={sliderRef}>
 						<label>彩度: {saturation}%</label>
 						<Slider
 							defaultValue={30}
@@ -350,7 +309,7 @@ const ImageEditor = ({
 				)}
 
 				{activeFilter === "contrast" && (
-					<div className="slider">
+					<div className="slider" ref={sliderRef}>
 						<label>コントラスト: {contrast}%</label>
 						<Slider
 							defaultValue={30}
@@ -370,7 +329,7 @@ const ImageEditor = ({
 				)}
 
 				{activeFilter === "hue" && (
-					<div className="slider">
+					<div className="slider" ref={sliderRef}>
 						<label>色相: {hue}%</label>
 						<Slider
 							defaultValue={30}

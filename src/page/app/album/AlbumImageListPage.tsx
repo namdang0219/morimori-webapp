@@ -26,6 +26,7 @@ const AlbumImageListPage = () => {
 	// get images from database
 	const { albums } = useAlbums();
 	const params = useParams();
+	const [loading, setLoading] = useState<boolean>(false);
 
 	const filteredAlbum = albums.find((a) => a.aid === params.aid);
 
@@ -33,6 +34,7 @@ const AlbumImageListPage = () => {
 
 	useEffect(() => {
 		const fetchImages = async () => {
+			setLoading(true);
 			if (!filteredAlbum) return;
 			const q = query(
 				collection(db, "images-v2"),
@@ -58,6 +60,7 @@ const AlbumImageListPage = () => {
 				});
 				setImages(imagesWithJsData.reverse());
 			});
+			setLoading(false);
 		};
 
 		fetchImages();
@@ -134,7 +137,12 @@ const AlbumImageListPage = () => {
 						open={editModalOpen}
 						styles={{ body: { padding: 0 } }}
 					>
-						{pickedImage && <ImageEditor image={pickedImage} setEditModalOpen={setEditModalOpen} />}
+						{pickedImage && (
+							<ImageEditor
+								image={pickedImage}
+								setEditModalOpen={setEditModalOpen}
+							/>
+						)}
 					</Drawer>
 					<div className="absolute inset-0 bg-white z-[1000]">
 						<div className="relative flex items-center justify-center w-full h-svh">
@@ -199,6 +207,10 @@ const AlbumImageListPage = () => {
 								/>
 							</div>
 						))}
+
+					{loading && (
+						<div className="w-full skeleton aspect-square"></div>
+					)}
 				</div>
 			</div>
 		</MainLayout>

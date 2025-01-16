@@ -5,6 +5,13 @@
 @layer base {
 }
 
+@layer components {
+	.skeleton {
+		@apply bg-gray-200 animate-pulse;
+	}
+}
+
+// scroll hidden
 .scroll-hidden {
 	-ms-overflow-style: none;
 	scrollbar-width: none;
@@ -13,6 +20,7 @@
 	display: none;
 }
 
+// loader spinner
 .loader {
 	width: 20px;
 	height: 20px;

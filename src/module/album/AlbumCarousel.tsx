@@ -1,6 +1,7 @@
 import React from "react";
 import Slider from "react-slick";
 import useAlbums from "../../hook/useAlbums";
+import { BsPlus } from "react-icons/bs";
 
 const AlbumCarousel = () => {
 	const { albums } = useAlbums();
@@ -17,6 +18,13 @@ const AlbumCarousel = () => {
 	};
 	return (
 		<div className="w-screen overflow-hidden slider-container shrink-0">
+			{/* albums.length == 0  */}
+			{albums.length === 0 && (
+				<div className="flex items-center bg-black bg-opacity-10 justify-center relative h-[240px] w-screen">
+					<BsPlus size={40} className="text-gray-500" />
+				</div>
+			)}
+
 			{/* album.length == 1  */}
 			{albums.length === 1 && (
 				<div className="flex items-center justify-center relative h-[240px] w-screen">

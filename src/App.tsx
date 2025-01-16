@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router";
+import { Route, Routes, useNavigate } from "react-router";
 import AlbumPage from "./page/app/album/AlbumPage";
 import AlbumDetailPage from "./page/app/album/AlbumDetailPage";
 import MapPage from "./page/app/map/MapPage";
@@ -8,14 +8,23 @@ import ProfilePage from "./page/app/profile/ProfilePage";
 import PageNotFound from "./page/app/global/PageNotFound";
 import LoginPage from "./page/auth/LoginPage";
 import SignupPage from "./page/auth/SignupPage";
-import React from "react";
+import React, { useEffect } from "react";
 import AlbumImageListPage from "./page/app/album/AlbumImageListPage";
 import ProfileEditPage from "./page/app/profile/ProfileEditPage";
 import SettingPage from "./page/app/profile/SettingPage";
 import useUser from "./hook/useUser";
+import ProtectedRoutes from "./ProtectedRoutes";
 
 const App = () => {
 	const { currentUser, loadingUser } = useUser();
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (currentUser && !loadingUser) {
+			navigate("/");
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [currentUser, loadingUser]);
 
 	if (loadingUser) {
 		return (
@@ -31,10 +40,10 @@ const App = () => {
 
 	return (
 		<Routes>
-			{currentUser ? (
-				// App
-				<>
-					{/* <Route element={<ProtectedRoutes />}> */}
+			{/* {currentUser ? ( */}
+			{/* // App */}
+			<>
+				<Route element={<ProtectedRoutes />}>
 					{/* album  */}
 					<Route path="/" element={<AlbumPage />} />
 					<Route
@@ -58,15 +67,15 @@ const App = () => {
 					<Route path="/profile" element={<ProfilePage />} />
 					<Route path="/profile-edit" element={<ProfileEditPage />} />
 					<Route path="/setting" element={<SettingPage />} />
-					{/* </Route> */}
-				</>
-			) : (
-				// Auth
-				<>
-					<Route path="/login" element={<LoginPage />} />
-					<Route path="/signup" element={<SignupPage />} />
-				</>
-			)}
+				</Route>
+			</>
+			{/* ) : ( */}
+			{/* // Auth */}
+			<>
+				<Route path="/login" element={<LoginPage />} />
+				<Route path="/signup" element={<SignupPage />} />
+			</>
+			{/* )} */}
 			{/* Global  */}
 			<Route path="*" element={<PageNotFound />} />
 		</Routes>

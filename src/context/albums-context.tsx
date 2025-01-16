@@ -14,17 +14,21 @@ import { handleTimestampToString } from "../util/func/handleTimestampToString";
 
 interface AlbumsContextType {
 	albums: IAlbum[];
+	fetchingAlbums: boolean;
 }
 
 const AlbumsContext = createContext<AlbumsContextType>({
 	albums: [],
+	fetchingAlbums: false,
 });
 
 const AlbumsProvider = ({ children }: { children: ReactNode }) => {
 	const { userData } = useUser();
 	const [remoteAlbums, setRemoteAlbums] = useState<IAlbum[]>([]);
+	const [fetchingAlbums, setFetchingAlbums] = useState<boolean>(false);
 
 	useEffect(() => {
+		setFetchingAlbums(true);
 		const q = query(
 			collection(db, "albums-v2"),
 			where("author", "==", String(userData?.uid)),
@@ -48,10 +52,12 @@ const AlbumsProvider = ({ children }: { children: ReactNode }) => {
 			});
 			setRemoteAlbums(albumWithJsData.reverse());
 		});
+		setFetchingAlbums(false);
 	}, [userData]);
 
 	const values = {
 		albums: remoteAlbums,
+		fetchingAlbums,
 	};
 	return (
 		<AlbumsContext.Provider value={values}>

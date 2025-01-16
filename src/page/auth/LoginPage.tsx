@@ -100,9 +100,9 @@ const LoginPage = () => {
 								errorMessage={errors.password?.message}
 							/>
 
-							<button className="ml-auto text-sm text-primary">
+							<div className="ml-auto text-sm cursor-pointer text-primary">
 								パスワード忘れた？
-							</button>
+							</div>
 						</div>
 
 						<ButtonPrimary

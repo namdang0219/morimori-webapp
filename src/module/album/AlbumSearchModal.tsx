@@ -26,6 +26,7 @@ const AlbumSearchModal = () => {
 				open={open}
 				key={"bottomDrawer"}
 				height={"100%"}
+				styles={{ body: { padding: 0 } }}
 			>
 				<div>
 					<div className="flex items-center gap-3">
