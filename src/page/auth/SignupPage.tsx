@@ -16,6 +16,7 @@ import {
 	setDoc,
 } from "firebase/firestore";
 import { IUser } from "../../util/types/IUser";
+import logo from "./../../../src/assets/images/auth-logo.png";
 
 export type SignupType = {
 	username: string;
@@ -108,9 +109,9 @@ const SignupPage = () => {
 					<div className="flex flex-col flex-1">
 						<div className="w-24 mx-auto mb-10 aspect-square">
 							<img
-								src="https://i.pinimg.com/736x/2a/86/6f/2a866fc3b2d4b56e94662f674d602682.jpg"
+								src={logo}
 								alt="app-logo"
-								className="object-cover object-center w-full h-full"
+								className="object-contain object-center w-full h-full"
 							/>
 						</div>
 						<form className="flex flex-col items-center gap-5">
