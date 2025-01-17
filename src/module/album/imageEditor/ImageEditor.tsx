@@ -100,53 +100,53 @@ const ImageEditor = ({
 	};
 
 	// Tải ảnh lên Firebase
-	const uploadToFirebase = async () => {
-		try {
-			const canvas = document.createElement("canvas");
-			const ctx = canvas.getContext("2d");
-			const img = imageRef.current;
+	// const uploadToFirebase = async () => {
+	// 	try {
+	// 		const canvas = document.createElement("canvas");
+	// 		const ctx = canvas.getContext("2d");
+	// 		const img = imageRef.current;
 
-			if (!img || !ctx) return;
+	// 		if (!img || !ctx) return;
 
-			// Kích thước canvas
-			canvas.width = img.naturalHeight;
-			canvas.height = img.naturalHeight;
+	// 		// Kích thước canvas
+	// 		canvas.width = img.naturalHeight;
+	// 		canvas.height = img.naturalHeight;
 
-			// Áp dụng bộ lọc ảnh
-			ctx.filter = `brightness(${brightness}%) saturate(${saturation}%) contrast(${contrast}%) hue-rotate(${hue}deg)`;
-			ctx.drawImage(img, 0, 0);
+	// 		// Áp dụng bộ lọc ảnh
+	// 		ctx.filter = `brightness(${brightness}%) saturate(${saturation}%) contrast(${contrast}%) hue-rotate(${hue}deg)`;
+	// 		ctx.drawImage(img, 0, 0);
 
-			// Vẽ sticker lên canvas
-			stickers.forEach((sticker) => {
-				const imgSticker = new Image();
-				imgSticker.src = sticker.url;
-				ctx.save();
-				ctx.translate(
-					sticker.x + imgSticker.width / 2,
-					sticker.y + imgSticker.height / 2
-				);
-				ctx.rotate((sticker.rotate * Math.PI) / 180);
-				ctx.scale(sticker.scale, sticker.scale);
-				ctx.translate(-imgSticker.width / 2, -imgSticker.height / 2);
-				ctx.drawImage(imgSticker, 0, 0);
-				ctx.restore();
-			});
+	// 		// Vẽ sticker lên canvas
+	// 		stickers.forEach((sticker) => {
+	// 			const imgSticker = new Image();
+	// 			imgSticker.src = sticker.url;
+	// 			ctx.save();
+	// 			ctx.translate(
+	// 				sticker.x + imgSticker.width / 2,
+	// 				sticker.y + imgSticker.height / 2
+	// 			);
+	// 			ctx.rotate((sticker.rotate * Math.PI) / 180);
+	// 			ctx.scale(sticker.scale, sticker.scale);
+	// 			ctx.translate(-imgSticker.width / 2, -imgSticker.height / 2);
+	// 			ctx.drawImage(imgSticker, 0, 0);
+	// 			ctx.restore();
+	// 		});
 
-			// Chuyển canvas thành dữ liệu base64
-			const dataUrl = canvas.toDataURL();
+	// 		// Chuyển canvas thành dữ liệu base64
+	// 		const dataUrl = canvas.toDataURL();
 
-			if (!dataUrl) return;
+	// 		if (!dataUrl) return;
 
-			// Upload lên Firebase
-			// const storage = getStorage();
-			// const storageRef = ref(storage, `edited-image-${Date.now()}.png`);
-			// await uploadString(storageRef, dataUrl, "data_url");
-			alert("Image uploaded to Firebase successfully!");
-		} catch (error) {
-			console.log(error);
-			toast.error("失敗しました！");
-		}
-	};
+	// 		// Upload lên Firebase
+	// 		// const storage = getStorage();
+	// 		// const storageRef = ref(storage, `edited-image-${Date.now()}.png`);
+	// 		// await uploadString(storageRef, dataUrl, "data_url");
+	// 		alert("Image uploaded to Firebase successfully!");
+	// 	} catch (error) {
+	// 		console.log(error);
+	// 		toast.error("失敗しました！");
+	// 	}
+	// };
 
 	return (
 		<div className="relative flex items-center justify-center w-full overflow-hidden bg-black h-svh">
