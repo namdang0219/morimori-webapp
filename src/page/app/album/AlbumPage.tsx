@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MainLayout from "../../../components/layout/MainLayout";
 import { IoAdd } from "react-icons/io5";
 import AlbumCarousel from "../../../module/album/AlbumCarousel";
@@ -9,16 +9,21 @@ import Header from "../../../components/layout/Header";
 import { albumMocks } from "../../../mock/albumMocks";
 import SectionTitle from "../../../components/title/SectionTitle";
 import { FaChevronRight } from "react-icons/fa";
-import { userMocks } from "../../../mock/userMocks";
 import { IUser } from "../../../util/types/IUser";
 
 import { IAlbum } from "../../../util/types/IAlbum";
 
 import useAlbums from "../../../hook/useAlbums";
 import CreateAlbumModal from "../../../module/album/CreateAlbumModal";
+import useUser from "../../../hook/useUser";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../../firebaseConfig";
+import { FaRegUser } from "react-icons/fa6";
 
 const AlbumPage = () => {
 	const { albums } = useAlbums();
+	const { userData } = useUser();
+	const friends = userData?.friends || [];
 
 	const [openCreateAlbumModal, setOpenCreateAlbumModal] =
 		useState<boolean>(false);
@@ -38,7 +43,7 @@ const AlbumPage = () => {
 						<OptionPopover
 							contents={[
 								{
-									label: "Add New Album",
+									label: "新規アルバム",
 									onClick: showDrawer,
 									icon: <IoAdd size={18} />,
 								},
@@ -76,22 +81,13 @@ const AlbumPage = () => {
 						</button>
 					</div>
 
-					<div className="flex items-center gap-3 px-main-padding">
-						{userMocks.length > 0 &&
-							userMocks.slice(0, 4).map((item: IUser, index) => (
-								<div
-									key={index}
-									className="w-full overflow-hidden bg-gray-200 rounded-full aspect-square"
-								>
-									{item.photoURL && (
-										<img
-											src={item.photoURL}
-											alt="user-avatar"
-											className="object-cover object-center w-full h-full"
-										/>
-									)}
-								</div>
-							))}
+					<div className="grid grid-cols-4 gap-3 px-main-padding">
+						{friends.length > 0 &&
+							friends
+								.slice(0, 4)
+								.map((item: string) => (
+									<FriendItem key={item} uid={item} />
+								))}
 					</div>
 				</div>
 				<AlbumHorizontalList
@@ -131,6 +127,52 @@ const AlbumPage = () => {
 				</p>
 			</div>
 		</MainLayout>
+	);
+};
+
+const FriendItem = ({ uid }: { uid: string }) => {
+	const [friendData, setFriendData] = useState<IUser | null>(null);
+
+	useEffect(() => {
+		async function getFriendData() {
+			const docRef = doc(db, "users-v2", uid);
+			const docSnap = await getDoc(docRef);
+			if (docSnap.exists()) {
+				setFriendData(docSnap.data() as IUser);
+			} else {
+				// docSnap.data() will be undefined in this case
+				console.log("No such document!");
+			}
+		}
+
+		getFriendData();
+	}, [uid]);
+
+	if (!friendData) {
+		return (
+			<div className="flex items-center justify-center w-full overflow-hidden bg-gray-200 rounded-full aspect-square">
+				<span>NoneData</span>
+			</div>
+		);
+	}
+
+	return (
+		<div>
+			<div className="w-full overflow-hidden bg-gray-200 rounded-full aspect-square">
+				{friendData.photoURL ? (
+					<img
+						src={friendData.photoURL}
+						alt="user-avatar"
+						className="object-cover object-center w-full h-full"
+					/>
+				) : (
+					<div className="flex items-center justify-center w-full h-full">
+						<FaRegUser size={40} className="text-gray-300" />
+					</div>
+				)}
+			</div>
+			<p className="mt-1 text-xs text-center">{friendData.displayName}</p>
+		</div>
 	);
 };
 

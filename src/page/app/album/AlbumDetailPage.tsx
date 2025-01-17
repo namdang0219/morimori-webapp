@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MainLayout from "../../../components/layout/MainLayout";
 import { useLocation, useNavigate, useParams } from "react-router";
 import Header from "../../../components/layout/Header";
@@ -14,11 +14,14 @@ import useAlbums from "../../../hook/useAlbums";
 import {
 	collection,
 	doc,
+	getDoc,
 	serverTimestamp,
 	updateDoc,
 } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { toast } from "react-toastify";
+import { handleShareAlbum } from "../../../util/func/handleShareAlbum";
+import { IUser } from "../../../util/types/IUser";
 
 const AlbumDetailPage = () => {
 	const navigate = useNavigate();
@@ -26,7 +29,7 @@ const AlbumDetailPage = () => {
 	const { albums } = useAlbums();
 	const location = useLocation();
 
-	const albumDetail = albums.find((album) => album.aid === params.aid); 
+	const albumDetail = albums.find((album) => album.aid === params.aid);
 
 	if (!albumDetail) {
 		return <PageNotFound />;
@@ -45,23 +48,6 @@ const AlbumDetailPage = () => {
 		} catch (error) {
 			toast.error("エラー！");
 			console.log(error);
-		}
-	};
-
-	const handleShareAlbum = async () => {
-		if (navigator.share) {
-			const shareData = {
-				title: "アルバムをシェアしよう！",
-				text: "これをシェアしますか？",
-				url: `https://morimori-webapp.vercel.app${location.pathname}`,
-			};
-
-			navigator
-				.share(shareData)
-				.then(() => console.log("完成！"))
-				.catch((error) => console.error("エラーが発生しました", error));
-		} else {
-			console.log("シェア機能がサポートされていないブラウザー");
 		}
 	};
 
@@ -85,6 +71,12 @@ const AlbumDetailPage = () => {
 										onClick: () => null,
 										icon: <RiEditBoxLine size={18} />,
 									},
+									{
+										label: "アルバムをシェア",
+										onClick: () =>
+											handleShareAlbum(location.pathname),
+										icon: <RiShareForwardFill size={18} />,
+									},
 								]}
 							/>
 						</>
@@ -103,24 +95,12 @@ const AlbumDetailPage = () => {
 							albumDetail.taggedFriends
 								.slice(0, 3)
 								.map((item, index) => {
-									const taggedUser = findUserFromUid(item);
 									return (
-										<div
+										<TaggedUserItem
 											key={item}
-											className={`overflow-hidden bg-white border-2 border-white rounded-full w-11 aspect-square`}
-											style={{
-												marginLeft:
-													index == 0 ? 0 : -20,
-											}}
-										>
-											<img
-												src={
-													taggedUser?.photoURL as string
-												}
-												alt="user-avatar"
-												className="object-cover object-center w-full h-full"
-											/>
-										</div>
+											index={index}
+											taggedUserId={item}
+										/>
 									);
 								})}
 						{albumDetail.taggedFriends.length >= 4 && (
@@ -162,7 +142,7 @@ const AlbumDetailPage = () => {
 							/>
 						</button>
 						<button
-							onClick={handleShareAlbum}
+							onClick={() => handleShareAlbum(location.pathname)}
 							className="flex items-center justify-center bg-white rounded-full w-11 aspect-square"
 						>
 							<RiShareForwardFill
@@ -184,13 +164,71 @@ const AlbumDetailPage = () => {
 						</p>
 					</div>
 
-					<ButtonPrimary onClick={() => navigate(`/album/photos/${albumDetail.aid}`)}>
+					<ButtonPrimary
+						onClick={() =>
+							navigate(`/album/photos/${albumDetail.aid}`)
+						}
+					>
 						写真を見る
 					</ButtonPrimary>
 				</div>
 			</div>
 		</MainLayout>
 		// <div></div>
+	);
+};
+
+const TaggedUserItem = ({
+	index,
+	taggedUserId,
+}: {
+	index: number;
+	taggedUserId: string;
+}) => {
+	const [taggedUserData, setTaggedUserData] = useState<IUser | null>(null);
+
+	useEffect(() => {
+		async function getFriendData() {
+			const docRef = doc(db, "users-v2", taggedUserId);
+			const docSnap = await getDoc(docRef);
+			if (docSnap.exists()) {
+				setTaggedUserData(docSnap.data() as IUser);
+			} else {
+				// docSnap.data() will be undefined in this case
+				console.log("No such document!");
+			}
+		}
+
+		getFriendData();
+	}, [taggedUserId]);
+
+	if (!taggedUserData) {
+		return (
+			<div className="flex items-center justify-center w-full overflow-hidden bg-gray-200 rounded-full aspect-square">
+				<span>NoneData</span>
+			</div>
+		);
+	}
+
+	return (
+		<div
+			className={`overflow-hidden bg-white border-2 border-white rounded-full w-11 aspect-square`}
+			style={{
+				marginLeft: index == 0 ? 0 : -20,
+			}}
+		>
+			{taggedUserData?.photoURL ? (
+				<img
+					src={taggedUserData?.photoURL as string}
+					alt="user-avatar"
+					className="object-cover object-center w-full h-full"
+				/>
+			) : (
+				<div className="flex items-center justify-center w-full h-full text-gray-500">
+					{taggedUserData.displayName?.slice(0, 1)}
+				</div>
+			)}
+		</div>
 	);
 };
 

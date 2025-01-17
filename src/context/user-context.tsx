@@ -7,8 +7,9 @@ import React, {
 	useState,
 } from "react";
 import { IUser } from "../util/types/IUser";
-import { auth } from "../firebaseConfig";
+import { auth, db } from "../firebaseConfig";
 import { onAuthStateChanged, User } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 interface UserContextType {
 	currentUser: User | null;
@@ -45,18 +46,18 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
 	}, [currentUser]);
 
 	useEffect(() => {
+		const getUserFriends = async () => {
+			const userdocRef = doc(db, "users-v2", String(currentUser?.uid));
+			const docSnap = await getDoc(userdocRef);
+			if (docSnap.exists()) {
+				setUserData(docSnap.data() as IUser);
+			} else {
+				// docSnap.data() will be undefined in this case
+				console.log("No such document!");
+			}
+		};
 		if (currentUser) {
-			setUserData({
-				uid: currentUser.uid,
-				displayName: currentUser.displayName,
-				email: currentUser.email,
-				photoURL: currentUser.photoURL,
-				friends: [],
-				posts: [],
-				albums: [],
-			});
-		} else {
-			setUserData(null);
+			getUserFriends();
 		}
 	}, [currentUser]);
 

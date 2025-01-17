@@ -56,9 +56,9 @@ const CreateAlbumModal = ({
 		}
 		const file = e.target.files?.[0];
 		if (file) {
-			const url = URL.createObjectURL(file); // Tạo URL tạm thời cho file
+			const url = URL.createObjectURL(file); // create file url
 			console.log("🚀 ~ handleChange ~ url:", url);
-			setAlbumCover(url); // Lưu URL vào state
+			setAlbumCover(url); // save file to state
 			setAlbumCoverFile(file);
 		}
 	}

@@ -95,12 +95,20 @@ const ProfilePage = () => {
 			<div className="overflow-y-scroll h-svh pt-header-height">
 				{/* avatar  */}
 				<div className="bg-violet-600 mt-2 w-[160px] aspect-square p-1 rounded-full flex mx-auto">
-					<div className="w-[152px] aspect-square flex rounded-full overflow-hidden p-1 bg-white flex-1">
-						<img
-							src="https://i.pinimg.com/736x/00/85/b6/0085b61bd3f5d216eecf94d3c8d4f110.jpg"
-							alt="current-user-avatar"
-							className="flex-1 object-cover object-center rounded-full"
-						/>
+					<div className="cursor-pointer w-[152px] aspect-square flex rounded-full overflow-hidden p-1 bg-white flex-1">
+						{userData.photoURL ? (
+							<img
+								src="https://i.pinimg.com/736x/00/85/b6/0085b61bd3f5d216eecf94d3c8d4f110.jpg"
+								alt="current-user-avatar"
+								className="flex-1 object-cover object-center rounded-full"
+							/>
+						) : (
+							<div className="flex items-center justify-center w-full h-full bg-gray-200 rounded-full">
+								<span className="text-[50px] text-gray-400">
+									{userData.displayName?.slice(0, 1)}
+								</span>
+							</div>
+						)}
 					</div>
 				</div>
 

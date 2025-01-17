@@ -4,33 +4,110 @@ import Header from "../../../components/layout/Header";
 import OptionPopover from "../../../components/popover/OptionPopover";
 import { IoAdd } from "react-icons/io5";
 import { IoMdShare } from "react-icons/io";
-import { useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import useAlbums from "../../../hook/useAlbums";
-import {
-	query,
-	collection,
-	where,
-	orderBy,
-	onSnapshot,
-	FieldValue,
-} from "firebase/firestore";
-import { db } from "../../../firebaseConfig";
 import { handleTimestampToString } from "../../../util/func/handleTimestampToString";
 import { IImage } from "../../../util/types/IImage";
 import { FaXmark } from "react-icons/fa6";
 import { LiaEdit } from "react-icons/lia";
 import { Drawer } from "antd";
 import ImageEditor from "../../../module/album/imageEditor/ImageEditor";
+import { RiShareForwardFill } from "react-icons/ri";
+import { handleShareAlbum } from "../../../util/func/handleShareAlbum";
+import { useAppState } from "../../../hook/userAppState";
+import { uploadBytes, getDownloadURL, ref } from "firebase/storage";
+import { db, storage } from "../../../firebaseConfig";
+import {
+	addDoc,
+	arrayUnion,
+	collection,
+	doc,
+	FieldValue,
+	onSnapshot,
+	orderBy,
+	query,
+	serverTimestamp,
+	updateDoc,
+	where,
+} from "firebase/firestore";
+import useUser from "../../../hook/useUser";
 
 const AlbumImageListPage = () => {
 	// get images from database
 	const { albums } = useAlbums();
 	const params = useParams();
+	const location = useLocation();
 	const [loading, setLoading] = useState<boolean>(false);
+	const { setAppStateLoading } = useAppState();
+	const { currentUser } = useUser();
 
 	const filteredAlbum = albums.find((a) => a.aid === params.aid);
 
 	const [images, setImages] = useState<IImage[]>([]);
+
+	// handle add image to album
+	const inputFileRef = React.useRef<HTMLInputElement>(null);
+	const [image, setImage] = useState<string | null>(null);
+	const [imageFile, setImageFile] = useState<any>();
+	console.log("🚀 ~ AlbumImageListPage ~ imageFile:", imageFile);
+
+	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+		if (e.target.files?.length === 0) {
+			if (inputFileRef.current) {
+				inputFileRef.current.click();
+			}
+		}
+		const file = e.target.files?.[0];
+		if (file) {
+			const url = URL.createObjectURL(file); // create file url
+			console.log("🚀 ~ handleChange ~ url:", url);
+			setImage(url); // save file to state
+			setImageFile(file);
+		}
+	}
+
+	useEffect(() => {
+		const handleCreateAlbum = async () => {
+			setAppStateLoading(true);
+			const photosRef = ref(storage, `photos/${Date.now()}.jpg`);
+
+			await uploadBytes(photosRef, imageFile);
+			const downloadUrl = await getDownloadURL(photosRef);
+
+			const newImage: IImage = {
+				album: [String(filteredAlbum?.aid)],
+				author: String(currentUser?.uid),
+				create_at: serverTimestamp(),
+				iid: String(serverTimestamp()),
+				location: {
+					lat: 37.7749,
+					long: -122.4194,
+				},
+				update_at: serverTimestamp(),
+				uri: downloadUrl,
+			};
+
+			const docRef = await addDoc(collection(db, "images-v2"), newImage);
+			await updateDoc(docRef, {
+				iid: docRef.id,
+			});
+
+			await updateDoc(doc(db, "albums-v2", String(filteredAlbum?.aid)), {
+				images: arrayUnion(docRef.id),
+			});
+
+			// clear modal and loading state
+			setAppStateLoading(false);
+			console.log("successfully");
+		};
+
+		if (imageFile) {
+			handleCreateAlbum();
+			setImageFile(null);
+		}
+		console.log(imageFile);
+		// eslint-disable-next-line
+	}, [imageFile]);
 
 	useEffect(() => {
 		const fetchImages = async () => {
@@ -112,13 +189,24 @@ const AlbumImageListPage = () => {
 				backTitle="Album Detail"
 				rightContainer={
 					<>
-						<IoAdd size={28} />
+						<label htmlFor="choose-image">
+							<IoAdd size={28} />
+							<input
+								type="file"
+								id="choose-image"
+								ref={inputFileRef}
+								onChange={(e) => handleChange(e)}
+								accept="image/*"
+								className="hidden"
+							/>
+						</label>
 						<OptionPopover
 							contents={[
 								{
-									label: "Share Album",
-									onClick: () => null,
-									icon: <IoMdShare size={18} />,
+									label: "アルバムをシェア",
+									onClick: () =>
+										handleShareAlbum(location.pathname),
+									icon: <RiShareForwardFill size={18} />,
 								},
 							]}
 						/>
@@ -197,20 +285,20 @@ const AlbumImageListPage = () => {
 						images.map((image) => (
 							<div
 								key={image.iid}
-								className="w-full aspect-square"
+								className="w-full overflow-hidden aspect-square"
 								onClick={() => onPickImage(image)}
 							>
 								<img
 									src={image.uri}
 									alt="image"
-									className="object-cover object-center"
+									className="object-cover object-center w-full h-full"
 								/>
 							</div>
 						))}
 
-					{loading && (
+					{/* {loading && (
 						<div className="w-full skeleton aspect-square"></div>
-					)}
+					)} */}
 				</div>
 			</div>
 		</MainLayout>
