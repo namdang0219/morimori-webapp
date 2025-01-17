@@ -5,9 +5,9 @@ export interface IUser {
 	uid: string;
 	displayName: string | null;
 	email: string | null;
-	photoURL: string | null;
+	photoURL: string | null | undefined;
 	posts: string[];
 	friends: string[];
 	albums: IAlbum[];
-	create_at: number | FieldValue;
+	create_at?: number | FieldValue;
 }

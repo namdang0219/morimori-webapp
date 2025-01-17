@@ -3,18 +3,15 @@ import MainLayout from "../../../components/layout/MainLayout";
 import Header from "../../../components/layout/Header";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
-import { useNavigate } from "react-router";
 import useUser from "../../../hook/useUser";
 
 const SettingPage = () => {
-	const navigate = useNavigate();
 	const { setCurrentUser } = useUser();
 
 	const handleSignout = async () => {
 		try {
 			await signOut(auth);
 			setCurrentUser(null);
-			navigate("/login");
 		} catch (error) {
 			console.log(error);
 		}
@@ -26,12 +23,12 @@ const SettingPage = () => {
 				backTitle="設定"
 				rightContainer={
 					<>
-						<button
-							className="text-sm text-red-500"
+						<div
 							onClick={handleSignout}
+							className="px-3 py-1.5 text-sm cursor-pointer text-white bg-red-500 rounded-md"
 						>
 							ログアウト
-						</button>
+						</div>
 					</>
 				}
 			/>

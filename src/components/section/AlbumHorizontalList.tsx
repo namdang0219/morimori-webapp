@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import SectionTitle from "../title/SectionTitle";
 import { FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { IoHeart } from "react-icons/io5";
 import { IAlbum } from "../../util/types/IAlbum";
+import { FaPlus } from "react-icons/fa6";
+import CreateAlbumModal from "../../module/album/CreateAlbumModal";
 
 const AlbumHorizontalList = ({
 	title,
@@ -15,15 +17,17 @@ const AlbumHorizontalList = ({
 	seeMoreHref: string;
 }) => {
 	const navigate = useNavigate();
+	const [createAlbumOpen, setCreateAlbumOpen] = useState<boolean>(false);
+
 	return (
 		<div>
 			<div className="flex items-center justify-between mb-2 px-main-padding">
 				<SectionTitle>{title}</SectionTitle>
 				<button
-					className="flex items-center gap-1 text-sm text-gray-400"
+					className="flex flex-row items-center gap-1 text-sm text-gray-400"
 					onClick={() => navigate(seeMoreHref)}
 				>
-					すべて
+					<span className="ml-auto">すべて</span>
 					<span>
 						<FaChevronRight size={14} />
 					</span>
@@ -31,6 +35,23 @@ const AlbumHorizontalList = ({
 			</div>
 
 			<div className="flex w-screen gap-2 overflow-x-scroll pl-main-padding scroll-hidden">
+				{contents.length === 0 && (
+					<>
+						<div
+							onClick={() => setCreateAlbumOpen(true)}
+							className="w-[140px] text-gray-400 cursor-pointer bg-gray-100 flex items-center justify-center h-[160px] relative rounded-lg overflow-hidden shrink-0 bg-cover bg-center"
+						>
+							<span>
+								<FaPlus size={30} />
+							</span>
+						</div>
+						<CreateAlbumModal
+							open={createAlbumOpen}
+							setOpen={setCreateAlbumOpen}
+						/>
+					</>
+				)}
+
 				{contents.length > 0 &&
 					contents.slice(0, 5).map((item: IAlbum) => (
 						<div

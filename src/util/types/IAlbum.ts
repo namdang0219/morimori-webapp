@@ -1,3 +1,4 @@
+import { FieldValue } from "firebase/firestore";
 import { IImage } from "./IImage";
 import { IUser } from "./IUser";
 
@@ -10,6 +11,6 @@ export interface IAlbum {
 	favorite: boolean;
 	taggedFriends: IUser["uid"][];
 	images: IImage["iid"][];
-	create_at: number;
-	update_at: number;
+	create_at: string | number | FieldValue;
+	update_at: string | number | FieldValue;
 }
