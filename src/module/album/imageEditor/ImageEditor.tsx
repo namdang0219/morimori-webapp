@@ -40,8 +40,8 @@ const ImageEditor = ({
 	const sliderRef = useRef(null);
 
 	const handleClickOutsideSlider = () => {
-        setActiveFilter(null);
-    };
+		setActiveFilter(null);
+	};
 
 	useOnClickOutside(sliderRef, handleClickOutsideSlider);
 
@@ -229,6 +229,7 @@ const ImageEditor = ({
 				className={`absolute border-t border-t-gray-700 bottom-0 left-0 flex items-center w-full text-xs text-gray-300 justify-evenly h-[56px]`}
 			>
 				<button
+					className="editor-button"
 					onClick={() =>
 						setActiveFilter(
 							activeFilter === "brightness" ? null : "brightness"
@@ -239,6 +240,7 @@ const ImageEditor = ({
 					<span className="button-name">明るさ</span>
 				</button>
 				<button
+					className="editor-button"
 					onClick={() =>
 						setActiveFilter(
 							activeFilter === "saturation" ? null : "saturation"
@@ -250,6 +252,7 @@ const ImageEditor = ({
 				</button>
 
 				<button
+					className="editor-button"
 					onClick={() =>
 						setActiveFilter(
 							activeFilter === "contrast" ? null : "contrast"
@@ -260,6 +263,7 @@ const ImageEditor = ({
 					<span className="button-name">コントラスト</span>
 				</button>
 				<button
+					className="editor-button"
 					onClick={() =>
 						setActiveFilter(activeFilter === "hue" ? null : "hue")
 					}

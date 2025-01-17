@@ -49,7 +49,6 @@ const AlbumImageListPage = () => {
 	const inputFileRef = React.useRef<HTMLInputElement>(null);
 	const [image, setImage] = useState<string | null>(null);
 	const [imageFile, setImageFile] = useState<any>();
-	console.log("🚀 ~ AlbumImageListPage ~ imageFile:", imageFile);
 
 	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
 		if (e.target.files?.length === 0) {
