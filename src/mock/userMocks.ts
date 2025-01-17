@@ -9,6 +9,7 @@ export const userMocks: IUser[] = [
 		email: "user@pinimg.com",
 		friends: ["1", "3", "4", "5"],
 		posts: ["2", "4", "5"],
+		albums: [],
 	},
 	{
 		uid: "2",
@@ -18,6 +19,7 @@ export const userMocks: IUser[] = [
 		email: "user@pinimg.com",
 		friends: ["1", "3", "4", "5"],
 		posts: ["2", "4", "5"],
+		albums: [],
 	},
 	{
 		uid: "3",
@@ -27,6 +29,7 @@ export const userMocks: IUser[] = [
 		email: "user@pinimg.com",
 		friends: ["1", "3", "4", "5"],
 		posts: ["2", "4", "5"],
+		albums: [],
 	},
 	{
 		uid: "4",
@@ -36,6 +39,7 @@ export const userMocks: IUser[] = [
 		email: "user@pinimg.com",
 		friends: ["1", "3", "4", "5"],
 		posts: ["2", "4", "5"],
+		albums: [],
 	},
 	{
 		uid: "5",
@@ -45,6 +49,7 @@ export const userMocks: IUser[] = [
 		email: "user@pinimg.com",
 		friends: ["1", "3", "4", "5"],
 		posts: ["2", "4", "5"],
+		albums: [],
 	},
 	{
 		uid: "6",
@@ -54,5 +59,6 @@ export const userMocks: IUser[] = [
 		email: "user@pinimg.com",
 		friends: ["1", "3", "4", "5"],
 		posts: ["2", "4", "5"],
+		albums: [],
 	},
 ];

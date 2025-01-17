@@ -1,6 +1,4 @@
-import { IUser } from "../util/types/IUser";
-
-export const currentUser: IUser = {
+export const currentUser = {
 	uid: "1",
 	displayName: "MeowCopter",
 	email: "meowcopter99@gmail.com",

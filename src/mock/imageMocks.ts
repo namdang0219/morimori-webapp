@@ -11,8 +11,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 	{
 		iid: "2",
@@ -23,8 +23,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 	{
 		iid: "3",
@@ -35,8 +35,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 	{
 		iid: "4",
@@ -47,8 +47,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 	{
 		iid: "5",
@@ -59,8 +59,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 
 	// 6 ~ 10
@@ -73,8 +73,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 	{
 		iid: "7",
@@ -85,8 +85,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 	{
 		iid: "8",
@@ -97,8 +97,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 	{
 		iid: "9",
@@ -109,8 +109,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 	{
 		iid: "10",
@@ -121,8 +121,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 	// 11 ~ 15
 	{
@@ -134,8 +134,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 	{
 		iid: "12",
@@ -146,8 +146,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 	{
 		iid: "13",
@@ -158,8 +158,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 	{
 		iid: "14",
@@ -170,8 +170,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 	{
 		iid: "15",
@@ -182,8 +182,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 	// 16 ~ 20
 	{
@@ -195,8 +195,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 	{
 		iid: "17",
@@ -207,8 +207,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 	{
 		iid: "18",
@@ -219,8 +219,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 	{
 		iid: "19",
@@ -231,8 +231,8 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 	{
 		iid: "20",
@@ -243,7 +243,7 @@ export const imageMocks: IImage[] = [
 			lat: 37.7749,
 			long: -122.4194,
 		},
-		create_at: 1629426400,
-		update_at: 1629426400,
+		create_at: "1629426400",
+		update_at: "1629426400",
 	},
 ];

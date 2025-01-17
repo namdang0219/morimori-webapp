@@ -22,7 +22,7 @@ const NotificationItem = ({ item }: { item: INotification }) => {
 		<div className="flex gap-3 py-2 px-main-padding">
 			<div className="w-[68px] h-[68px] rounded-full shrink-0 overflow-hidden mt-2">
 				<img
-					src={findUserFromUid(item.noticeUser)?.photoURL}
+					src={findUserFromUid(item.noticeUser)?.photoURL as string}
 					alt="user-avatar"
 					className="object-cover object-center w-full h-full"
 				/>
